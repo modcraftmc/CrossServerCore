@@ -1,0 +1,11 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url = 'https://maven.minecraftforge.net/' }
+    }
+}
+
+rootProject.name = "CrossServerCore"
+
+include 'cross-server-core'
+include 'cross-server-core-client-compat'

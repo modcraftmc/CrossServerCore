@@ -1,0 +1,21 @@
+jarJar.enable()
+
+dependencies {
+    implementation(group: 'com.rabbitmq', name: 'amqp-client', version: '[5.16.0]')
+    implementation(group: 'org.mongodb', name: 'mongodb-driver-sync', version: '[4.9.0]')
+    implementation(group: 'com.moandjiezana.toml', name: 'toml4j', version: '[0.7.2]')
+
+    jarJar(group: 'com.rabbitmq', name: 'amqp-client', version: '[5.16.0]') {}
+    jarJar(group: 'org.mongodb', name: 'mongodb-driver-sync', version: '[4.9.0]') {}
+    jarJar(group: 'com.moandjiezana.toml', name: 'toml4j', version: '[0.7.2]') {}
+}
+
+reobf {
+    jarJar { }
+}
+
+tasks.jarJar.configure {
+    classifier ''
+}
+
+tasks.jarJar.finalizedBy('reobfJarJar')

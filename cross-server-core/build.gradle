@@ -19,3 +19,25 @@ tasks.jarJar.configure {
 }
 
 tasks.jarJar.finalizedBy('reobfJarJar')
+
+
+publishing {
+    repositories {
+        maven {
+            name = "ModcraftMaven"
+            url = "https://maven.modcraftmc.fr/releases"
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            groupId = "fr.modcraftmc"
+            artifactId = "cross-server-core"
+            version = "1.0"
+            from components.java
+        }
+    }
+}

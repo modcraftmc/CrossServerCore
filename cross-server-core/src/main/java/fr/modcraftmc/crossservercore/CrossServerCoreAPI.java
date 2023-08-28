@@ -7,11 +7,21 @@ import fr.modcraftmc.crossservercore.message.MessageHandler;
 import fr.modcraftmc.crossservercore.networkdiscovery.SyncServer;
 import org.bson.Document;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class CrossServerCoreAPI {
+    private static boolean isCrossServerCoreLoaded = false;
+    private static List<Runnable> runWhenCSCIsReady = new ArrayList<>();
+
     public static void registerCrossMessage(String messageName, Function<JsonObject, ? extends BaseMessage> deserializer) {
+        if(!MessageHandler.isMessageRegistered(messageName)){
+            CrossServerCore.LOGGER.warn("Trying to register a message via API that is already registered");
+            return;
+        }
         MessageHandler.registerCrossMessage(messageName, deserializer);
     }
 
@@ -39,7 +49,7 @@ public class CrossServerCoreAPI {
         return Map.copyOf(CrossServerCore.getPlayersLocation().getPlayerServerMap());
     }
 
-    public static SyncServer findPlayer(String playerName) {
+    public static Optional<SyncServer> findPlayer(String playerName) {
         return CrossServerCore.getServerCluster().findPlayer(playerName);
     }
 
@@ -49,5 +59,17 @@ public class CrossServerCoreAPI {
 
     public static SecurityWatcher getSynchronizationSecurityWatcher() {
         return CrossServerCore.getSynchronizationSecurityWatcher();
+    }
+
+    public static void runWhenCSCIsReady(Runnable runnable) {
+        if(isCrossServerCoreLoaded)
+            runnable.run();
+        else
+            runWhenCSCIsReady.add(runnable);
+    }
+
+    public static void APIInit() {
+        isCrossServerCoreLoaded = true;
+        runWhenCSCIsReady.forEach(Runnable::run);
     }
 }

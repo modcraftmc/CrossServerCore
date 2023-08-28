@@ -25,9 +25,12 @@ import net.minecraftforge.event.entity.player.PlayerNegotiationEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.IExtensionPoint;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.network.NetworkConstants;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.slf4j.Logger;
@@ -55,7 +58,7 @@ public class CrossServerCore {
     private static SecurityWatcher SynchronizationSecurityWatcher;
 
     private static final Network network = new Network();
-    private static final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENT_TYPES = DeferredRegister.create(Registry.COMMAND_ARGUMENT_TYPE_REGISTRY, MOD_ID);
+    private static final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENT_TYPES = DeferredRegister.create(Registry.COMMAND_ARGUMENT_TYPE_REGISTRY, "crossservercore");
 
     static {
         CrossServerCore.ARGUMENT_TYPES.register("network_player", () -> ArgumentTypeInfos.registerByClass(NetworkPlayerArgument.class, SingletonArgumentInfo.contextFree(NetworkPlayerArgument::new)));
@@ -63,6 +66,7 @@ public class CrossServerCore {
 
     public CrossServerCore() {
         CrossServerCore.LOGGER.info("CrossServerCore is here !");
+        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::serverSetup);
 
@@ -74,7 +78,7 @@ public class CrossServerCore {
         ARGUMENT_TYPES.register(modEventBus);
         network.Init();
     }
-    
+
     @SubscribeEvent
     public void serverSetup(FMLDedicatedServerSetupEvent event){
         SynchronizationSecurityWatcher = new SecurityWatcher("synchronization security watcher");
@@ -106,6 +110,8 @@ public class CrossServerCore {
         loadConfig();
         initializeNetworkDiscovery();// must be after loadConfig because it use rabbitmq connection
         CrossServerCore.LOGGER.info("Main modules initialized");
+        CrossServerCore.LOGGER.info("Enabling CrossServerCore API");
+        CrossServerCoreAPI.APIInit();
     }
 
     private void initializeDatabaseConnection(){

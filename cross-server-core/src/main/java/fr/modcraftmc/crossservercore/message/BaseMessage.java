@@ -3,9 +3,9 @@ package fr.modcraftmc.crossservercore.message;
 import com.google.gson.JsonObject;
 
 public abstract class BaseMessage {
-    String messageName;
+    private String messageName;
 
-    BaseMessage(String messageName) {
+    public BaseMessage(String messageName) {
         this.messageName = messageName;
     }
     protected JsonObject serialize() {

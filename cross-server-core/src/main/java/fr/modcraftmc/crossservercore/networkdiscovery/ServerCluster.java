@@ -75,13 +75,13 @@ public class ServerCluster implements MessageSender {
         return players;
     }
 
-    public SyncServer findPlayer(String player) {
+    public Optional<SyncServer> findPlayer(String player) {
         var playersLocations = CrossServerCore.getPlayersLocation().getPlayerServerMap();
         for (var entry : playersLocations.entrySet()){
             if (entry.getKey().equals(player)){
-                return entry.getValue();
+                return Optional.of(entry.getValue());
             }
         }
-        return null;
+        return Optional.empty();
     }
 }

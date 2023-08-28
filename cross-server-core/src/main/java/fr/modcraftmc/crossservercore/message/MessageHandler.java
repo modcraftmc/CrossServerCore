@@ -53,7 +53,7 @@ public class MessageHandler {
         if(messageMap.containsKey(message.get("messageName").getAsString()))
             messageMap.get(message.get("messageName").getAsString()).apply(message).handle();
         else
-            CrossServerCore.LOGGER.error("Message id not found");
+            CrossServerCore.LOGGER.error("Message id {} not found", message.get("messageName").getAsString());
     }
 
     public static void handle(String message){

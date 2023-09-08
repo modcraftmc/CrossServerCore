@@ -18,8 +18,8 @@ public class CrossServerCoreAPI {
     private static List<Runnable> runWhenCSCIsReady = new ArrayList<>();
 
     public static void registerCrossMessage(String messageName, Function<JsonObject, ? extends BaseMessage> deserializer) {
-        if(!MessageHandler.isMessageRegistered(messageName)){
-            CrossServerCore.LOGGER.warn("Trying to register a message via API that is already registered");
+        if(MessageHandler.isMessageRegistered(messageName)){
+            CrossServerCore.LOGGER.warn("Trying to register a message via API that is already registered (message id : {})", messageName);
             return;
         }
         MessageHandler.registerCrossMessage(messageName, deserializer);
@@ -27,7 +27,7 @@ public class CrossServerCoreAPI {
 
     public static void sendCrossMessageToAllOtherServer(BaseMessage message) {
         if(!MessageHandler.isMessageRegistered(message.getMessageName())){
-            CrossServerCore.LOGGER.warn("Trying to send a message via API that is not registered");
+            CrossServerCore.LOGGER.warn("Trying to send a message via API that is not registered (message id : {})", message.getMessageName());
             return;
         }
         CrossServerCore.getServerCluster().sendMessageExceptCurrent(message.serializeToString());
@@ -35,7 +35,7 @@ public class CrossServerCoreAPI {
 
     public static void sendCrossMessageToServer(BaseMessage message, String serverName) {
         if(!MessageHandler.isMessageRegistered(message.getMessageName())){
-            CrossServerCore.LOGGER.warn("Trying to send a message via API that is not registered");
+            CrossServerCore.LOGGER.warn("Trying to send a message via API that is not registered (message id : {})", message.getMessageName());
             return;
         }
         CrossServerCore.getServerCluster().getServer(serverName).ifPresent(server -> server.sendMessage(message.serializeToString()));
@@ -69,6 +69,7 @@ public class CrossServerCoreAPI {
     }
 
     public static void APIInit() {
+        CrossServerCore.LOGGER.info("Enabling CrossServerCore API");
         isCrossServerCoreLoaded = true;
         runWhenCSCIsReady.forEach(Runnable::run);
     }

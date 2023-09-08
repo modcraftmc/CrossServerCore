@@ -2,9 +2,7 @@ package fr.modcraftmc.crossservercore;
 
 import com.mojang.logging.LogUtils;
 import fr.modcraftmc.crossservercore.command.arguments.NetworkPlayerArgument;
-import fr.modcraftmc.crossservercore.message.MessageHandler;
-import fr.modcraftmc.crossservercore.message.PlayerJoined;
-import fr.modcraftmc.crossservercore.message.PlayerLeaved;
+import fr.modcraftmc.crossservercore.message.*;
 import fr.modcraftmc.crossservercore.mongodb.MongodbConnection;
 import fr.modcraftmc.crossservercore.mongodb.MongodbConnectionBuilder;
 import fr.modcraftmc.crossservercore.networkdiscovery.PlayersLocation;
@@ -110,8 +108,10 @@ public class CrossServerCore {
         loadConfig();
         initializeNetworkDiscovery();// must be after loadConfig because it use rabbitmq connection
         CrossServerCore.LOGGER.info("Main modules initialized");
-        CrossServerCore.LOGGER.info("Enabling CrossServerCore API");
         CrossServerCoreAPI.APIInit();
+
+        CrossServerCore.LOGGER.info("Checking for CrossServerCoreProxyExtension...");
+        sendProxyMessage(new ProxyExtensionHandshake(serverName));
     }
 
     private void initializeDatabaseConnection(){
@@ -209,6 +209,14 @@ public class CrossServerCore {
 
         for(ServerPlayer player : server.getPlayerList().getPlayers()){
             player.connection.disconnect(Component.literal(reason));
+        }
+    }
+
+    public static void sendProxyMessage(BaseMessage message){
+        try {
+            RabbitmqDirectPublisher.instance.publish("proxy", message.serializeToString());
+        } catch (IOException e) {
+            CrossServerCore.LOGGER.error("Failed to send proxy message {} : {}", message.getMessageName(), e.getMessage());
         }
     }
 

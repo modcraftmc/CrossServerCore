@@ -9,6 +9,7 @@ import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqSubscriber;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 public class MessageHandler {
@@ -21,6 +22,9 @@ public class MessageHandler {
         messageMap.put(DetachServer.MESSAGE_NAME, DetachServer::deserialize);
         messageMap.put(PlayerJoined.MESSAGE_NAME, PlayerJoined::deserialize);
         messageMap.put(PlayerLeaved.MESSAGE_NAME, PlayerLeaved::deserialize);
+        messageMap.put(TransferPlayer.MESSAGE_NAME, TransferPlayer::deserialize);
+        messageMap.put(ProxyExtensionHandshake.MESSAGE_NAME, ProxyExtensionHandshake::deserialize);
+        messageMap.put(ProxyExtensionHandshakeResponse.MESSAGE_NAME, ProxyExtensionHandshakeResponse::deserialize);
 
         CrossServerCore.registerOnConfigLoad(() -> {
             RabbitmqDirectSubscriber.instance.subscribe(CrossServerCore.getServerName(), (consumerTag, message) -> {
@@ -47,13 +51,16 @@ public class MessageHandler {
 
     public static void registerCrossMessage(String messageName, Function<JsonObject, ? extends BaseMessage> deserializer) {
         messageMap.put(messageName, deserializer);
+        CrossServerCore.LOGGER.info("Registered message {}", messageName);
     }
 
     public static void handle(JsonObject message){
         if(messageMap.containsKey(message.get("messageName").getAsString()))
             messageMap.get(message.get("messageName").getAsString()).apply(message).handle();
-        else
+        else {
             CrossServerCore.LOGGER.error("Message id {} not found", message.get("messageName").getAsString());
+            CrossServerCore.LOGGER.error("Valid message ids are: {}", messageMap.keySet());
+        }
     }
 
     public static void handle(String message){
@@ -62,5 +69,9 @@ public class MessageHandler {
 
     public static boolean isMessageRegistered(String messageName){
         return messageMap.containsKey(messageName);
+    }
+
+    public static Set<String> getRegisteredMessages() {
+        return messageMap.keySet();
     }
 }

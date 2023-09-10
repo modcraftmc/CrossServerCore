@@ -1,7 +1,7 @@
 package fr.modcraftmc.crossservercore;
 
 import com.mojang.logging.LogUtils;
-import fr.modcraftmc.crossservercore.command.arguments.NetworkPlayerArgument;
+import fr.modcraftmc.crossservercoreapi.commands.arguments.NetworkPlayerArgument;
 import fr.modcraftmc.crossservercore.dataintegrity.SecurityWatcher;
 import fr.modcraftmc.crossservercore.message.MessageHandler;
 import fr.modcraftmc.crossservercore.message.PlayerJoined;

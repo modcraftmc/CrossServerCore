@@ -21,12 +21,16 @@ version = 'unspecified'
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://libraries.minecraft.net"
+    }
 }
 
 dependencies {
     implementation (group: 'org.mongodb', name: 'mongodb-driver-sync', version: '[4.9.0]')
     implementation 'org.slf4j:slf4j-api:1.7.32'
     implementation 'com.google.code.gson:gson:2.8.8'
+    implementation 'com.mojang:brigadier:1.0.500'
 }
 
 shadowJar {

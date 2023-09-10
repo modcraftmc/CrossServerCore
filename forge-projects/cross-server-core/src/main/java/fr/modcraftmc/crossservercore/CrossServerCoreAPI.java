@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class CrossServerCoreAPI {
@@ -59,6 +60,14 @@ public class CrossServerCoreAPI {
 
     public static SecurityWatcher getSynchronizationSecurityWatcher() {
         return CrossServerCore.getSynchronizationSecurityWatcher();
+    }
+
+    public static void registerOnPlayerJoinedCluster(BiConsumer<String, SyncServer> runnable) {
+        CrossServerCore.getPlayersLocation().playerJoinedEvent.add(runnable);
+    }
+
+    public static void registerOnPlayerLeftCluster(BiConsumer<String, SyncServer> runnable) {
+        CrossServerCore.getPlayersLocation().playerLeavedEvent.add(runnable);
     }
 
     public static void runWhenCSCIsReady(Runnable runnable) {

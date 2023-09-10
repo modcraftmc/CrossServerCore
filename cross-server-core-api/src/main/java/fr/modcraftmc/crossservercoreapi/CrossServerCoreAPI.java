@@ -19,7 +19,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class CrossServerCoreAPI {
-    private static CrossServerCoreAPI instance;
+    public static CrossServerCoreAPI instance;
     private static boolean isCrossServerCoreLoaded = false;
     private static List<Runnable> runWhenCSCIsReady = new ArrayList<>();
     private final Logger logger;
@@ -40,14 +40,14 @@ public class CrossServerCoreAPI {
         this.securityWatcher = securityWatcher;
         instance = this;
 
-        logger.info("Initializing fr.modcraftmc.crossservercoreapi.CrossServerCoreAPI");
+        logger.info("Initializing CrossServerCoreAPI");
         isCrossServerCoreLoaded = true;
         runWhenCSCIsReady.forEach(Runnable::run);
     }
 
     public void registerCrossMessage(String messageName, Function<JsonObject, ? extends BaseMessage> deserializer) {
         if(messageHandler.isMessageRegistered(messageName)){
-            logger.warn("Trying to register a fr.modcraftmc.crossservercoreapi.message via API that is already registered (fr.modcraftmc.crossservercoreapi.message id : {})", messageName);
+            logger.warn("Trying to register a message via API that is already registered (message id : {})", messageName);
             return;
         }
         messageHandler.registerCrossMessage(messageName, deserializer);
@@ -55,7 +55,7 @@ public class CrossServerCoreAPI {
 
     public void sendCrossMessageToAllOtherServer(BaseMessage message) {
         if(!messageHandler.isMessageRegistered(message.getMessageName())){
-            logger.warn("Trying to send a fr.modcraftmc.crossservercoreapi.message via API that is not registered (fr.modcraftmc.crossservercoreapi.message id : {})", message.getMessageName());
+            logger.warn("Trying to send a message via API that is not registered (message id : {})", message.getMessageName());
             return;
         }
         serverCluster.sendMessageExceptCurrent(message.serializeToString());
@@ -63,7 +63,7 @@ public class CrossServerCoreAPI {
 
     public void sendCrossMessageToServer(BaseMessage message, String serverName) {
         if(!messageHandler.isMessageRegistered(message.getMessageName())){
-            logger.warn("Trying to send a fr.modcraftmc.crossservercoreapi.message via API that is not registered (fr.modcraftmc.crossservercoreapi.message id : {})", message.getMessageName());
+            logger.warn("Trying to send a message via API that is not registered (message id : {})", message.getMessageName());
             return;
         }
         serverCluster.getServer(serverName).ifPresent(server -> server.sendMessage(message.serializeToString()));

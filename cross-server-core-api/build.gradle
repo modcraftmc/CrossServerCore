@@ -24,9 +24,9 @@ repositories {
 }
 
 dependencies {
-    shade(group: 'com.rabbitmq', name: 'amqp-client', version: '[5.16.0]')
-    shade(group: 'org.mongodb', name: 'mongodb-driver-sync', version: '[4.9.0]')
-    shade(group: 'com.moandjiezana.toml', name: 'toml4j', version: '[0.7.2]')
+    implementation (group: 'org.mongodb', name: 'mongodb-driver-sync', version: '[4.9.0]')
+    implementation 'org.slf4j:slf4j-api:1.7.32'
+    implementation 'com.google.code.gson:gson:2.8.8'
 }
 
 shadowJar {
@@ -35,10 +35,10 @@ shadowJar {
 
     //relocate 'org.mongodb.mongodb-driver-sync', 'shaded.mongodb-driver-sync'
     //relocate 'com.moandjiezana.toml', 'shaded.toml'
-    dependencies {
-        exclude(dependency('org.slf4j:slf4j-api'))
-        exclude(dependency('com.google.code.gson:gson'))
-    }
+//    dependencies {
+//        exclude(dependency('org.slf4j:slf4j-api'))
+//        exclude(dependency('com.google.code.gson:gson'))
+//    }
 
     archiveBaseName = "${project.name}"
     archiveVersion = "${mc_version}-${mod_version}"

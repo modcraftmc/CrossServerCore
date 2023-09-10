@@ -3,19 +3,22 @@ package fr.modcraftmc.crossservercore.networkdiscovery;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.message.AttachServer;
 import fr.modcraftmc.crossservercore.message.DetachServer;
-import fr.modcraftmc.crossservercore.message.MessageSender;
 import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqPublisher;
+import fr.modcraftmc.crossservercoreapi.networkdiscovery.IServerCluster;
+import fr.modcraftmc.crossservercoreapi.networkdiscovery.ISyncServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ServerCluster implements MessageSender {
+public class ServerCluster implements IServerCluster {
     public List<SyncServer> servers;
+    public PlayersLocation playersLocation;
 
     public ServerCluster() {
         this.servers = new ArrayList<>();
+        this.playersLocation = new PlayersLocation();
     }
 
     public void addServer(SyncServer server){
@@ -75,7 +78,7 @@ public class ServerCluster implements MessageSender {
         return players;
     }
 
-    public Optional<SyncServer> findPlayer(String player) {
+    public Optional<? extends ISyncServer> findPlayer(String player) {
         var playersLocations = CrossServerCore.getPlayersLocation().getPlayerServerMap();
         for (var entry : playersLocations.entrySet()){
             if (entry.getKey().equals(player)){

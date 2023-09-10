@@ -1,14 +1,14 @@
 package fr.modcraftmc.crossservercore.networkdiscovery;
 
 import fr.modcraftmc.crossservercore.CrossServerCore;
-import fr.modcraftmc.crossservercore.message.MessageSender;
 import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqDirectPublisher;
+import fr.modcraftmc.crossservercoreapi.networkdiscovery.ISyncServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SyncServer implements MessageSender {
+public class SyncServer implements ISyncServer {
     private final String serverName;
     private final List<String> players;
 

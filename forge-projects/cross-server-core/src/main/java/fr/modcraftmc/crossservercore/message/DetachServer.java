@@ -2,8 +2,9 @@ package fr.modcraftmc.crossservercore.message;
 
 import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.CrossServerCore;
+import fr.modcraftmc.crossservercoreapi.message.BaseMessage;
 
-public class DetachServer extends BaseMessage{
+public class DetachServer extends BaseMessage {
     public static final String MESSAGE_NAME = "Detach";
 
     public final String serverName;
@@ -27,7 +28,7 @@ public class DetachServer extends BaseMessage{
     }
 
     @Override
-    protected void handle() {
+    public void handle() {
         CrossServerCore.getServerCluster().removeServer(serverName);
         CrossServerCore.LOGGER.debug(String.format("Server %s have been detached from the network", serverName));
     }

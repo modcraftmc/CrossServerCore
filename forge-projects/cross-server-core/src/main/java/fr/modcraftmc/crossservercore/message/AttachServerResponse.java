@@ -4,11 +4,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.networkdiscovery.SyncServer;
+import fr.modcraftmc.crossservercoreapi.message.BaseMessage;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttachServerResponse extends BaseMessage{
+public class AttachServerResponse extends BaseMessage {
     public static final String MESSAGE_NAME = "AttachServerResponse";
     public final String serverName;
     public final List<String> players;
@@ -42,7 +43,7 @@ public class AttachServerResponse extends BaseMessage{
     }
 
     @Override
-    protected void handle() {
+    public void handle() {
         SyncServer syncServer = new SyncServer(serverName);
         CrossServerCore.getServerCluster().addServer(syncServer);
         for (String player : players) {

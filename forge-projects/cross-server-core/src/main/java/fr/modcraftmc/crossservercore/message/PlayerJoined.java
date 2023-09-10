@@ -2,8 +2,9 @@ package fr.modcraftmc.crossservercore.message;
 
 import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.CrossServerCore;
+import fr.modcraftmc.crossservercoreapi.message.BaseMessage;
 
-public class PlayerJoined extends BaseMessage{
+public class PlayerJoined extends BaseMessage {
     public static final String MESSAGE_NAME = "PlayerJoined";
 
     public final String playerName;
@@ -30,7 +31,7 @@ public class PlayerJoined extends BaseMessage{
     }
 
     @Override
-    protected void handle() {
+    public void handle() {
         CrossServerCore.getServerCluster().getServer(serverName).ifPresentOrElse(
         syncServer -> {
             CrossServerCore.LOGGER.debug(String.format("Player %s joined server %s", playerName, serverName));

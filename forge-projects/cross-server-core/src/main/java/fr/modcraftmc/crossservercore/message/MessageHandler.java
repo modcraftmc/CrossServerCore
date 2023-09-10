@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqDirectSubscriber;
 import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqSubscriber;
+import fr.modcraftmc.crossservercoreapi.message.BaseMessage;
+import fr.modcraftmc.crossservercoreapi.message.IMessageHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -12,11 +14,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-public class MessageHandler {
-    static final Map<String, Function<JsonObject, ? extends BaseMessage>> messageMap = new HashMap<>();
-    public static Gson GSON = new Gson();
+public class MessageHandler implements IMessageHandler {
+    private final Map<String, Function<JsonObject, ? extends BaseMessage>> messageMap = new HashMap<>();
+    private Gson GSON = new Gson();
 
-    public static void init(){
+    public MessageHandler(){
+    }
+
+    public void init(){
         messageMap.put(AttachServer.MESSAGE_NAME, AttachServer::deserialize);
         messageMap.put(AttachServerResponse.MESSAGE_NAME, AttachServerResponse::deserialize);
         messageMap.put(DetachServer.MESSAGE_NAME, DetachServer::deserialize);
@@ -31,7 +36,7 @@ public class MessageHandler {
                 CrossServerCore.LOGGER.debug("Received message: " + new String(message.getBody()));
                 String messageJson = new String(message.getBody(), StandardCharsets.UTF_8);
                 try {
-                    MessageHandler.handle(messageJson);
+                    handle(messageJson);
                 } catch (Exception e) {
                     CrossServerCore.LOGGER.error("Error while handling message", e);
                 }
@@ -41,7 +46,7 @@ public class MessageHandler {
                 CrossServerCore.LOGGER.debug("Received message: " + new String(message.getBody()));
                 String messageJson = new String(message.getBody(), StandardCharsets.UTF_8);
                 try {
-                    MessageHandler.handle(messageJson);
+                    handle(messageJson);
                 } catch (Exception e) {
                     CrossServerCore.LOGGER.error("Error while handling message", e);
                 }
@@ -49,12 +54,12 @@ public class MessageHandler {
         });
     }
 
-    public static void registerCrossMessage(String messageName, Function<JsonObject, ? extends BaseMessage> deserializer) {
+    public void registerCrossMessage(String messageName, Function<JsonObject, ? extends BaseMessage> deserializer) {
         messageMap.put(messageName, deserializer);
         CrossServerCore.LOGGER.info("Registered message {}", messageName);
     }
 
-    public static void handle(JsonObject message){
+    public void handle(JsonObject message){
         if(messageMap.containsKey(message.get("messageName").getAsString()))
             messageMap.get(message.get("messageName").getAsString()).apply(message).handle();
         else {
@@ -63,15 +68,15 @@ public class MessageHandler {
         }
     }
 
-    public static void handle(String message){
+    public void handle(String message){
         handle(GSON.fromJson(message, JsonObject.class));
     }
 
-    public static boolean isMessageRegistered(String messageName){
+    public boolean isMessageRegistered(String messageName){
         return messageMap.containsKey(messageName);
     }
 
-    public static Set<String> getRegisteredMessages() {
+    public Set<String> getRegisteredMessages() {
         return messageMap.keySet();
     }
 }

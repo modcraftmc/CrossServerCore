@@ -15,6 +15,7 @@ configurations {
 }
 
 dependencies {
+    implementation project(path: ':cross-server-core-api')
     shade(group: 'com.rabbitmq', name: 'amqp-client', version: '[5.16.0]')
     shade(group: 'org.mongodb', name: 'mongodb-driver-sync', version: '[4.9.0]')
     shade(group: 'com.moandjiezana.toml', name: 'toml4j', version: '[0.7.2]')

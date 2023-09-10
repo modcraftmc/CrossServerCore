@@ -1,20 +1,20 @@
 package fr.modcraftmc.crossservercore;
 
 import fr.modcraftmc.crossservercore.message.TransferPlayer;
+import fr.modcraftmc.crossservercoreapi.ICrossServerCoreProxyExtension;
 
-public class CrossServerCoreProxyExtensionAPI {
-    private static boolean proxyExtensionEnabled = false;
+public class CrossServerCoreProxyExtension implements ICrossServerCoreProxyExtension {
+    private boolean proxyExtensionEnabled = false;
 
-    public static void APIInit(){
-        CrossServerCore.LOGGER.info("Enabling CrossServerCoreProxyExtension API");
+    public void enable() {
         proxyExtensionEnabled = true;
     }
 
-    public static boolean isProxyExtensionEnabled() {
+    public boolean isProxyExtensionEnabled() {
         return proxyExtensionEnabled;
     }
 
-    public static void transferPlayer(String playerName, String serverName){
+    public void transferPlayer(String playerName, String serverName){
         if(!proxyExtensionEnabled){
             CrossServerCore.LOGGER.warn("Trying to transfer a player but the proxy extension is not enabled");
             return;

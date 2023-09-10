@@ -2,7 +2,11 @@ package fr.modcraftmc.crossservercore;
 
 import com.mojang.logging.LogUtils;
 import fr.modcraftmc.crossservercore.command.arguments.NetworkPlayerArgument;
-import fr.modcraftmc.crossservercore.message.*;
+import fr.modcraftmc.crossservercore.dataintegrity.SecurityWatcher;
+import fr.modcraftmc.crossservercore.message.MessageHandler;
+import fr.modcraftmc.crossservercore.message.PlayerJoined;
+import fr.modcraftmc.crossservercore.message.PlayerLeaved;
+import fr.modcraftmc.crossservercore.message.ProxyExtensionHandshake;
 import fr.modcraftmc.crossservercore.mongodb.MongodbConnection;
 import fr.modcraftmc.crossservercore.mongodb.MongodbConnectionBuilder;
 import fr.modcraftmc.crossservercore.networkdiscovery.PlayersLocation;
@@ -10,6 +14,9 @@ import fr.modcraftmc.crossservercore.networkdiscovery.ServerCluster;
 import fr.modcraftmc.crossservercore.networking.Network;
 import fr.modcraftmc.crossservercore.networking.packets.PacketUpdateClusterPlayers;
 import fr.modcraftmc.crossservercore.rabbitmq.*;
+import fr.modcraftmc.crossservercoreapi.CrossServerCoreAPI;
+import fr.modcraftmc.crossservercoreapi.CrossServerCoreProxyExtensionAPI;
+import fr.modcraftmc.crossservercoreapi.message.BaseMessage;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
@@ -46,14 +53,15 @@ public class CrossServerCore {
     private static final List<Runnable> onConfigLoad = new ArrayList<>();
     private static String serverName;
 
-    private static final PlayersLocation playersLocation = new PlayersLocation();
-
     private static final ServerCluster serverCluster = new ServerCluster();
 
     private static MongodbConnection mongodbConnection;
     private static RabbitmqConnection rabbitmqConnection;
 
+    private static final MessageHandler messageHandler = new MessageHandler();
     private static SecurityWatcher SynchronizationSecurityWatcher;
+
+    private static final CrossServerCoreProxyExtension crossServerCoreProxyExtension = new CrossServerCoreProxyExtension();
 
     private static final Network network = new Network();
     private static final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENT_TYPES = DeferredRegister.create(Registry.COMMAND_ARGUMENT_TYPE_REGISTRY, "crossservercore");
@@ -104,11 +112,11 @@ public class CrossServerCore {
         CrossServerCore.LOGGER.debug("Initializing main modules");
         initializeDatabaseConnection();
         initializeMessageSystem();
-        MessageHandler.init();
+        messageHandler.init();
         loadConfig();
         initializeNetworkDiscovery();// must be after loadConfig because it use rabbitmq connection
         CrossServerCore.LOGGER.info("Main modules initialized");
-        CrossServerCoreAPI.APIInit();
+        initAPIs();
 
         CrossServerCore.LOGGER.info("Checking for CrossServerCoreProxyExtension...");
         sendProxyMessage(new ProxyExtensionHandshake(serverName));
@@ -152,7 +160,7 @@ public class CrossServerCore {
                         .build();
 
                 CrossServerCore.LOGGER.info("Connected to RabbitMQ");
-                CrossServerCore.LOGGER.debug("Initializing message streams");
+                CrossServerCore.LOGGER.debug("Initializing fr.modcraftmc.crossservercoreapi.message streams");
                 //TODO: create builders
                 new RabbitmqPublisher(rabbitmqConnection);
                 new RabbitmqSubscriber(rabbitmqConnection);
@@ -178,6 +186,11 @@ public class CrossServerCore {
         CrossServerCore.LOGGER.info("Network identity initialized");
     }
 
+    public void initAPIs() {
+        new CrossServerCoreAPI(LOGGER, serverName, serverCluster, serverCluster.playersLocation, messageHandler, mongodbConnection::getCollection, SynchronizationSecurityWatcher);
+        new CrossServerCoreProxyExtensionAPI(LOGGER, crossServerCoreProxyExtension);
+    }
+
     public void onServerStop(ServerStoppingEvent event){
         serverCluster.detach();
     }
@@ -185,7 +198,7 @@ public class CrossServerCore {
     public static void updatePlayersListToClients(){
         if(ServerLifecycleHooks.getCurrentServer() == null) return;
 
-        PacketUpdateClusterPlayers packetUpdateClusterPlayers = new PacketUpdateClusterPlayers(playersLocation.getAllPlayers());
+        PacketUpdateClusterPlayers packetUpdateClusterPlayers = new PacketUpdateClusterPlayers(serverCluster.playersLocation.getAllPlayers());
         network.sendToAllPlayers(packetUpdateClusterPlayers);
     }
 
@@ -221,7 +234,7 @@ public class CrossServerCore {
     }
 
     public static PlayersLocation getPlayersLocation(){
-        return playersLocation;
+        return serverCluster.playersLocation;
     }
 
     public static ServerCluster getServerCluster(){
@@ -242,6 +255,10 @@ public class CrossServerCore {
 
     public static SecurityWatcher getSynchronizationSecurityWatcher() {
         return SynchronizationSecurityWatcher;
+    }
+
+    public static CrossServerCoreProxyExtension getCrossServerCoreProxyExtension() {
+        return crossServerCoreProxyExtension;
     }
 
     public static void registerOnConfigLoad(Runnable runnable) {

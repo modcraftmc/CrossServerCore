@@ -1,7 +1,8 @@
 package fr.modcraftmc.crossservercore.message;
 
 import com.google.gson.JsonObject;
-import fr.modcraftmc.crossservercore.CrossServerCoreProxyExtensionAPI;
+import fr.modcraftmc.crossservercore.CrossServerCore;
+import fr.modcraftmc.crossservercoreapi.message.BaseMessage;
 
 public class ProxyExtensionHandshakeResponse extends BaseMessage {
     public static final String MESSAGE_NAME = "proxy_extension_handshake_response";
@@ -20,7 +21,7 @@ public class ProxyExtensionHandshakeResponse extends BaseMessage {
     }
 
     @Override
-    protected void handle() {
-        CrossServerCoreProxyExtensionAPI.APIInit();
+    public void handle() {
+        CrossServerCore.getCrossServerCoreProxyExtension().enable();
     }
 }

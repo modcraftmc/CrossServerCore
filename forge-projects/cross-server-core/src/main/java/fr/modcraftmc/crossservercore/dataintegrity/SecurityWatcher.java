@@ -1,9 +1,12 @@
-package fr.modcraftmc.crossservercore;
+package fr.modcraftmc.crossservercore.dataintegrity;
+
+import fr.modcraftmc.crossservercoreapi.dataintegrity.ISecurityWatcher;
+import fr.modcraftmc.crossservercoreapi.dataintegrity.SecurityIssue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SecurityWatcher {
+public class SecurityWatcher implements ISecurityWatcher {
     public static SecurityIssue RABBITMQ_CONNECTION_ISSUE = new SecurityIssue("RabbitMQ connection issue", "RabbitMQ server is unreachable");
     public static SecurityIssue MONGODB_CONNECTION_ISSUE = new SecurityIssue("MongoDB connection issue", "MongoDB server is unreachable");
 
@@ -68,10 +71,8 @@ public class SecurityWatcher {
         StringBuilder reason = new StringBuilder();
         reason.append("Security issue detected on ").append(name).append(" :\n");
         for (SecurityIssue issue : issues) {
-            reason.append("\t").append(issue.issueName).append(" : ").append(issue.issueDescription).append("\n");
+            reason.append("\t").append(issue.issueName()).append(" : ").append(issue.issueDescription()).append("\n");
         }
         return reason.toString();
     }
-
-    public record SecurityIssue(String issueName, String issueDescription) { }
 }

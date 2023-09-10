@@ -2,6 +2,7 @@ package fr.modcraftmc.crossservercore.message;
 
 import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.CrossServerCore;
+import fr.modcraftmc.crossservercoreapi.message.BaseMessage;
 
 public class PlayerLeaved extends BaseMessage {
     public static final String MESSAGE_NAME = "PlayerLeaved";
@@ -30,7 +31,7 @@ public class PlayerLeaved extends BaseMessage {
     }
 
     @Override
-    protected void handle() {
+    public void handle() {
         CrossServerCore.LOGGER.debug(String.format("Player %s leaved server %s", playerName, serverName));
         CrossServerCore.getPlayersLocation().removePlayer(playerName);
     }

@@ -1,23 +1,35 @@
 package fr.modcraftmc.crossservercore.networkdiscovery;
 
 import fr.modcraftmc.crossservercore.CrossServerCore;
+import fr.modcraftmc.crossservercoreapi.networkdiscovery.IPlayersLocation;
+import fr.modcraftmc.crossservercoreapi.networkdiscovery.ISyncServer;
 
 import java.util.*;
 import java.util.function.BiConsumer;
 
-public class PlayersLocation {
+public class PlayersLocation implements IPlayersLocation {
     private final Map<String, SyncServer> playersLocation;
 
     public PlayersLocation() {
         this.playersLocation = new HashMap<>();
     }
 
-    public Map<String, SyncServer> getPlayerServerMap() {
+    public Map<String, ? extends ISyncServer> getPlayerServerMap() {
         return playersLocation;
     }
 
-    public List<BiConsumer<String, SyncServer>> playerJoinedEvent = new ArrayList<>();
-    public List<BiConsumer<String, SyncServer>> playerLeavedEvent = new ArrayList<>();
+    public List<BiConsumer<String, ISyncServer>> playerJoinedEvent = new ArrayList<>();
+    public List<BiConsumer<String, ISyncServer>> playerLeavedEvent = new ArrayList<>();
+
+    @Override
+    public void registerOnPlayerJoinedClusterEvent(BiConsumer<String, ISyncServer> event) {
+        playerJoinedEvent.add(event);
+    }
+
+    @Override
+    public void registerOnPlayerLeavedClusterEvent(BiConsumer<String, ISyncServer> event) {
+        playerLeavedEvent.add(event);
+    }
 
     public void setPlayerLocation(String player, SyncServer location) {
         if(playersLocation.containsKey(player)) {

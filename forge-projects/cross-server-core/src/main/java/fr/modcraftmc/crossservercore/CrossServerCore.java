@@ -187,8 +187,10 @@ public class CrossServerCore {
     }
 
     public void initAPIs() {
-        new CrossServerCoreAPI(LOGGER, serverName, serverCluster, serverCluster.playersLocation, messageHandler, mongodbConnection::getCollection, SynchronizationSecurityWatcher);
+        CrossServerCoreAPI api = new CrossServerCoreAPI(LOGGER, serverName, serverCluster, serverCluster.playersLocation, messageHandler, mongodbConnection::getCollection, SynchronizationSecurityWatcher);
         new CrossServerCoreProxyExtensionAPI(LOGGER, crossServerCoreProxyExtension);
+
+        api.initAPI();
     }
 
     public void onServerStop(ServerStoppingEvent event){

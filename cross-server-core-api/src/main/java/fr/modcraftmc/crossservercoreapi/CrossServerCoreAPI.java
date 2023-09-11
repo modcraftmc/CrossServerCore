@@ -39,7 +39,9 @@ public class CrossServerCoreAPI {
         this.mongodbCollectionProvider = mongodbCollectionProvider;
         this.securityWatcher = securityWatcher;
         instance = this;
+    }
 
+    public void initAPI() {
         logger.info("Initializing CrossServerCoreAPI");
         isCrossServerCoreLoaded = true;
         runWhenCSCIsReady.forEach(Runnable::run);

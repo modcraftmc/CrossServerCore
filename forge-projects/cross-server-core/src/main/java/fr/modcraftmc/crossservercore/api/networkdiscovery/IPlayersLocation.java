@@ -1,4 +1,4 @@
-package fr.modcraftmc.crossservercoreapi.networkdiscovery;
+package fr.modcraftmc.crossservercore.api.networkdiscovery;
 
 import java.util.Map;
 import java.util.function.BiConsumer;

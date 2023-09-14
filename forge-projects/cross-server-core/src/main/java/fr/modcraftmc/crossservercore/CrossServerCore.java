@@ -1,7 +1,8 @@
 package fr.modcraftmc.crossservercore;
 
 import com.mojang.logging.LogUtils;
-import fr.modcraftmc.crossservercoreapi.commands.arguments.NetworkPlayerArgument;
+import fr.modcraftmc.crossservercore.api.CrossServerCoreAPI;
+import fr.modcraftmc.crossservercore.api.arguments.NetworkPlayerArgument;
 import fr.modcraftmc.crossservercore.dataintegrity.SecurityWatcher;
 import fr.modcraftmc.crossservercore.message.MessageHandler;
 import fr.modcraftmc.crossservercore.message.PlayerJoined;
@@ -14,9 +15,8 @@ import fr.modcraftmc.crossservercore.networkdiscovery.ServerCluster;
 import fr.modcraftmc.crossservercore.networking.Network;
 import fr.modcraftmc.crossservercore.networking.packets.PacketUpdateClusterPlayers;
 import fr.modcraftmc.crossservercore.rabbitmq.*;
-import fr.modcraftmc.crossservercoreapi.CrossServerCoreAPI;
-import fr.modcraftmc.crossservercoreapi.CrossServerCoreProxyExtensionAPI;
-import fr.modcraftmc.crossservercoreapi.message.BaseMessage;
+import fr.modcraftmc.crossservercore.api.CrossServerCoreProxyExtensionAPI;
+import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
@@ -117,9 +117,16 @@ public class CrossServerCore {
         initializeNetworkDiscovery();// must be after loadConfig because it use rabbitmq connection
         CrossServerCore.LOGGER.info("Main modules initialized");
         initAPIs();
+        initOldAPIs();
 
         CrossServerCore.LOGGER.info("Checking for CrossServerCoreProxyExtension...");
         sendProxyMessage(new ProxyExtensionHandshake(serverName));
+    }
+
+    @Deprecated
+    private void initOldAPIs() {
+        fr.modcraftmc.crossservercore.CrossServerCoreAPI.APIInit();
+        fr.modcraftmc.crossservercore.CrossServerCoreProxyExtensionAPI.APIInit();
     }
 
     private void initializeDatabaseConnection(){
@@ -160,7 +167,7 @@ public class CrossServerCore {
                         .build();
 
                 CrossServerCore.LOGGER.info("Connected to RabbitMQ");
-                CrossServerCore.LOGGER.debug("Initializing fr.modcraftmc.crossservercoreapi.message streams");
+                CrossServerCore.LOGGER.debug("Initializing fr.modcraftmc.crossservercore.api.message streams");
                 //TODO: create builders
                 new RabbitmqPublisher(rabbitmqConnection);
                 new RabbitmqSubscriber(rabbitmqConnection);
@@ -257,6 +264,10 @@ public class CrossServerCore {
 
     public static SecurityWatcher getSynchronizationSecurityWatcher() {
         return SynchronizationSecurityWatcher;
+    }
+
+    public static MessageHandler getMessageHandler(){
+        return messageHandler;
     }
 
     public static CrossServerCoreProxyExtension getCrossServerCoreProxyExtension() {

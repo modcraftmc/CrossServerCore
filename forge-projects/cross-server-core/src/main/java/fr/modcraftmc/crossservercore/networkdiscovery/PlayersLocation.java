@@ -1,8 +1,8 @@
 package fr.modcraftmc.crossservercore.networkdiscovery;
 
 import fr.modcraftmc.crossservercore.CrossServerCore;
-import fr.modcraftmc.crossservercoreapi.networkdiscovery.IPlayersLocation;
-import fr.modcraftmc.crossservercoreapi.networkdiscovery.ISyncServer;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.IPlayersLocation;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
 
 import java.util.*;
 import java.util.function.BiConsumer;

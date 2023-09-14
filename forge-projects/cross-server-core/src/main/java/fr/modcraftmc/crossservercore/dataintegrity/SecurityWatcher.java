@@ -1,7 +1,7 @@
 package fr.modcraftmc.crossservercore.dataintegrity;
 
-import fr.modcraftmc.crossservercoreapi.dataintegrity.ISecurityWatcher;
-import fr.modcraftmc.crossservercoreapi.dataintegrity.SecurityIssue;
+import fr.modcraftmc.crossservercore.api.dataintegrity.ISecurityWatcher;
+import fr.modcraftmc.crossservercore.api.dataintegrity.SecurityIssue;
 
 import java.util.ArrayList;
 import java.util.List;

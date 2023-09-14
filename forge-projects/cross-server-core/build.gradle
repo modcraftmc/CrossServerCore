@@ -4,6 +4,13 @@ plugins{
 
 apply plugin: 'com.github.johnrengelman.shadow'
 
+group = 'fr.modcraftmc'
+if(project.release_type == "snapshot") {
+    version = "${mc_version}-${mod_version}-SNAPSHOT"
+} else{
+    version = "${mc_version}-${mod_version}"
+}
+
 configurations {
     // Create the library configuration, where our non-mod libraries will be added to
     library
@@ -15,7 +22,7 @@ configurations {
 }
 
 dependencies {
-    implementation project(path: ':cross-server-core-api')
+    //shade project(path: ':cross-server-core-api')
     shade(group: 'com.rabbitmq', name: 'amqp-client', version: '[5.16.0]')
     shade(group: 'org.mongodb', name: 'mongodb-driver-sync', version: '[4.9.0]')
     shade(group: 'com.moandjiezana.toml', name: 'toml4j', version: '[0.7.2]')
@@ -30,10 +37,15 @@ shadowJar {
     dependencies {
         exclude(dependency('org.slf4j:slf4j-api'))
         exclude(dependency('com.google.code.gson:gson'))
+        exclude(dependency('com.mojang:brigadier'))
     }
 
     archiveBaseName = "${project.name}"
-    archiveVersion = "${mc_version}-${mod_version}"
+    if(project.release_type == "snapshot") {
+        archiveVersion = "${mc_version}-${mod_version}-SNAPSHOT"
+    } else{
+        archiveVersion = "${mc_version}-${mod_version}"
+    }
 }
 
 jar.finalizedBy('shadowJar')
@@ -43,7 +55,11 @@ publishing {
     repositories {
         maven {
             name = "ModcraftMaven"
-            url = "https://maven.modcraftmc.fr/releases"
+            if(project.release_type == "snapshot") {
+                url = "https://maven.modcraftmc.fr/snapshots"
+            } else{
+                url = "https://maven.modcraftmc.fr/releases"
+            }
             credentials(PasswordCredentials)
             authentication {
                 basic(BasicAuthentication)
@@ -53,9 +69,17 @@ publishing {
     publications {
         maven(MavenPublication) { publication ->
             project.shadow.component(publication)
+
             groupId = "fr.modcraftmc"
             artifactId = "cross-server-core"
             version = project.mod_version
+
+            artifact sourcesJar{
+                classifier('sources')
+            }
+            artifact apiJar {
+                classifier('api')
+            }
         }
     }
 }

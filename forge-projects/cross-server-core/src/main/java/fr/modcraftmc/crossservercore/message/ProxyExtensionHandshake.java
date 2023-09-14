@@ -1,7 +1,7 @@
 package fr.modcraftmc.crossservercore.message;
 
 import com.google.gson.JsonObject;
-import fr.modcraftmc.crossservercoreapi.message.BaseMessage;
+import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 
 public class ProxyExtensionHandshake extends BaseMessage {
     public static final String MESSAGE_NAME = "proxy_extension_handshake";

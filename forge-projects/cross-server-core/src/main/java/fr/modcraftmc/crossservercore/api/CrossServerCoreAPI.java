@@ -1,13 +1,13 @@
-package fr.modcraftmc.crossservercoreapi;
+package fr.modcraftmc.crossservercore.api;
 
 import com.google.gson.JsonObject;
 import com.mongodb.client.MongoCollection;
-import fr.modcraftmc.crossservercoreapi.dataintegrity.ISecurityWatcher;
-import fr.modcraftmc.crossservercoreapi.message.BaseMessage;
-import fr.modcraftmc.crossservercoreapi.message.IMessageHandler;
-import fr.modcraftmc.crossservercoreapi.networkdiscovery.IPlayersLocation;
-import fr.modcraftmc.crossservercoreapi.networkdiscovery.IServerCluster;
-import fr.modcraftmc.crossservercoreapi.networkdiscovery.ISyncServer;
+import fr.modcraftmc.crossservercore.api.dataintegrity.ISecurityWatcher;
+import fr.modcraftmc.crossservercore.api.message.BaseMessage;
+import fr.modcraftmc.crossservercore.api.message.IMessageHandler;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.IPlayersLocation;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.IServerCluster;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
 import org.bson.Document;
 import org.slf4j.Logger;
 
@@ -42,7 +42,7 @@ public class CrossServerCoreAPI {
     }
 
     public void initAPI() {
-        logger.info("Initializing CrossServerCoreAPI");
+        logger.info("Initializing crossservercore.api");
         isCrossServerCoreLoaded = true;
         runWhenCSCIsReady.forEach(Runnable::run);
     }

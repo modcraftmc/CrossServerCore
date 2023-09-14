@@ -2,7 +2,7 @@ package fr.modcraftmc.crossservercore.message;
 
 import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.CrossServerCore;
-import fr.modcraftmc.crossservercoreapi.message.BaseMessage;
+import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 
 public class DetachServer extends BaseMessage {
     public static final String MESSAGE_NAME = "Detach";

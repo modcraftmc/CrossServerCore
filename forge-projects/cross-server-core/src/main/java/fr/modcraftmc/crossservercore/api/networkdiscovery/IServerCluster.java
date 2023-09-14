@@ -1,6 +1,6 @@
-package fr.modcraftmc.crossservercoreapi.networkdiscovery;
+package fr.modcraftmc.crossservercore.api.networkdiscovery;
 
-import fr.modcraftmc.crossservercoreapi.message.IMessageSender;
+import fr.modcraftmc.crossservercore.api.message.IMessageSender;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package fr.modcraftmc.crossservercoreapi.dataintegrity;
+package fr.modcraftmc.crossservercore.api.dataintegrity;
 
 public interface ISecurityWatcher {
     public void addIssue(SecurityIssue issue);

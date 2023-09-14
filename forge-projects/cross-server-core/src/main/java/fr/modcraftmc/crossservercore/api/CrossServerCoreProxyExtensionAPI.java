@@ -1,4 +1,4 @@
-package fr.modcraftmc.crossservercoreapi;
+package fr.modcraftmc.crossservercore.api;
 
 import org.slf4j.Logger;
 

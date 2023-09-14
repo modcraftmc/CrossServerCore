@@ -1,4 +1,4 @@
-package fr.modcraftmc.crossservercoreapi;
+package fr.modcraftmc.crossservercore.api;
 
 public interface ICrossServerCoreProxyExtension {
     public boolean isProxyExtensionEnabled();

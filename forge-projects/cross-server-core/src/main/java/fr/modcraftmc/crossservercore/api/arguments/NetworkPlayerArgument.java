@@ -1,4 +1,4 @@
-package fr.modcraftmc.crossservercoreapi.commands.arguments;
+package fr.modcraftmc.crossservercore.api.arguments;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;

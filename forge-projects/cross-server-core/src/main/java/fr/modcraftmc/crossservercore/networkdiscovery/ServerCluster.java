@@ -4,8 +4,8 @@ import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.message.AttachServer;
 import fr.modcraftmc.crossservercore.message.DetachServer;
 import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqPublisher;
-import fr.modcraftmc.crossservercoreapi.networkdiscovery.IServerCluster;
-import fr.modcraftmc.crossservercoreapi.networkdiscovery.ISyncServer;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.IServerCluster;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
 
 import java.io.IOException;
 import java.util.ArrayList;

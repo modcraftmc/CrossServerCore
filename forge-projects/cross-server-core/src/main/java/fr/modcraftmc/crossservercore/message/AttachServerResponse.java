@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.networkdiscovery.SyncServer;
-import fr.modcraftmc.crossservercoreapi.message.BaseMessage;
+import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 
 import java.util.ArrayList;
 import java.util.List;

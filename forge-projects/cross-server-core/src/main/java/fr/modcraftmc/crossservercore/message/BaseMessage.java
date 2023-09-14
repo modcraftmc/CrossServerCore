@@ -1,7 +1,8 @@
-package fr.modcraftmc.crossservercoreapi.message;
+package fr.modcraftmc.crossservercore.message;
 
 import com.google.gson.JsonObject;
 
+@Deprecated()
 public abstract class BaseMessage {
     private String messageName;
 
@@ -20,5 +21,5 @@ public abstract class BaseMessage {
 
     public abstract String getMessageName();
 
-    public abstract void handle();
+    protected abstract void handle();
 }

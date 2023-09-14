@@ -1,4 +1,4 @@
-package fr.modcraftmc.crossservercoreapi.message;
+package fr.modcraftmc.crossservercore.api.message;
 
 import com.google.gson.JsonObject;
 

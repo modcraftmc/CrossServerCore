@@ -2,7 +2,7 @@ package fr.modcraftmc.crossservercore.networkdiscovery;
 
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqDirectPublisher;
-import fr.modcraftmc.crossservercoreapi.networkdiscovery.ISyncServer;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
 
 import java.io.IOException;
 import java.util.ArrayList;

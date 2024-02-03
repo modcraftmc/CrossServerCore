@@ -3,11 +3,13 @@ package fr.modcraftmc.crossservercore.api;
 import com.google.gson.JsonObject;
 import com.mongodb.client.MongoCollection;
 import fr.modcraftmc.crossservercore.api.dataintegrity.ISecurityWatcher;
+import fr.modcraftmc.crossservercore.api.events.CrossServerCoreReadyEvent;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.api.message.IMessageHandler;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.IPlayersLocation;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.IServerCluster;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
+import net.minecraftforge.common.MinecraftForge;
 import org.bson.Document;
 import org.slf4j.Logger;
 
@@ -21,7 +23,6 @@ import java.util.function.Function;
 public class CrossServerCoreAPI {
     public static CrossServerCoreAPI instance;
     private static boolean isCrossServerCoreLoaded = false;
-    private static List<Runnable> runWhenCSCIsReady = new ArrayList<>();
     private final Logger logger;
     private final String serverName;
     private final IServerCluster serverCluster;
@@ -44,7 +45,7 @@ public class CrossServerCoreAPI {
     public void initAPI() {
         logger.info("Initializing crossservercore.api");
         isCrossServerCoreLoaded = true;
-        runWhenCSCIsReady.forEach(Runnable::run);
+        MinecraftForge.EVENT_BUS.post(new CrossServerCoreReadyEvent(this));
     }
 
     public void registerCrossMessage(String messageName, Function<JsonObject, ? extends BaseMessage> deserializer) {
@@ -97,12 +98,5 @@ public class CrossServerCoreAPI {
 
     public void registerOnPlayerLeftCluster(BiConsumer<String, ISyncServer> runnable) {
         playersLocation.registerOnPlayerLeavedClusterEvent(runnable);
-    }
-
-    public static void runWhenCSCIsReady(Runnable runnable) {
-        if(isCrossServerCoreLoaded)
-            runnable.run();
-        else
-            runWhenCSCIsReady.add(runnable);
     }
 }

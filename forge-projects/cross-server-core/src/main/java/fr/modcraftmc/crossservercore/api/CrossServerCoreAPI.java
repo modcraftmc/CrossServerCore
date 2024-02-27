@@ -45,7 +45,6 @@ public class CrossServerCoreAPI {
     public void initAPI() {
         logger.info("Initializing crossservercore.api");
         isCrossServerCoreLoaded = true;
-        MinecraftForge.EVENT_BUS.post(new CrossServerCoreReadyEvent(this));
     }
 
     public void registerCrossMessage(String messageName, Function<JsonObject, ? extends BaseMessage> deserializer) {

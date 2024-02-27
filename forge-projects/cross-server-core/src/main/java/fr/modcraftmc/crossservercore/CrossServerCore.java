@@ -3,6 +3,7 @@ package fr.modcraftmc.crossservercore;
 import com.mojang.logging.LogUtils;
 import fr.modcraftmc.crossservercore.api.CrossServerCoreAPI;
 import fr.modcraftmc.crossservercore.api.arguments.NetworkPlayerArgument;
+import fr.modcraftmc.crossservercore.api.events.CrossServerCoreReadyEvent;
 import fr.modcraftmc.crossservercore.dataintegrity.SecurityWatcher;
 import fr.modcraftmc.crossservercore.message.MessageHandler;
 import fr.modcraftmc.crossservercore.message.PlayerJoined;
@@ -27,6 +28,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerNegotiationEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -41,6 +43,8 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -80,6 +84,7 @@ public class CrossServerCore {
         MinecraftForge.EVENT_BUS.addListener(CrossServerCore::onPreLogin);
         MinecraftForge.EVENT_BUS.addListener(CrossServerCore::onPlayerJoin);
         MinecraftForge.EVENT_BUS.addListener(CrossServerCore::onPlayerLeave);
+        MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 
         ARGUMENT_TYPES.register(modEventBus);
         network.Init();
@@ -121,6 +126,11 @@ public class CrossServerCore {
 
         CrossServerCore.LOGGER.info("Checking for CrossServerCoreProxyExtension...");
         sendProxyMessage(new ProxyExtensionHandshake(serverName));
+    }
+
+    @SubscribeEvent
+    public void serverStarted(ServerStartedEvent event) {
+        MinecraftForge.EVENT_BUS.post(new CrossServerCoreReadyEvent(CrossServerCoreAPI.instance));
     }
 
     @Deprecated

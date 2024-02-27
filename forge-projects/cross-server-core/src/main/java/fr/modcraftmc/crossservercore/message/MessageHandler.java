@@ -3,6 +3,7 @@ package fr.modcraftmc.crossservercore.message;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.CrossServerCore;
+import fr.modcraftmc.crossservercore.api.message.SendMessage;
 import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqDirectSubscriber;
 import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqSubscriber;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
@@ -33,6 +34,7 @@ public class MessageHandler implements IMessageHandler {
         messageMap.put(TransferPlayer.MESSAGE_NAME, TransferPlayer::deserialize);
         messageMap.put(ProxyExtensionHandshake.MESSAGE_NAME, ProxyExtensionHandshake::deserialize);
         messageMap.put(ProxyExtensionHandshakeResponse.MESSAGE_NAME, ProxyExtensionHandshakeResponse::deserialize);
+        messageMap.put(SendMessage.MESSAGE_NAME, SendMessage::deserialize);
 
         CrossServerCore.registerOnConfigLoad(() -> {
             RabbitmqDirectSubscriber.instance.subscribe(CrossServerCore.getServerName(), (consumerTag, message) -> {

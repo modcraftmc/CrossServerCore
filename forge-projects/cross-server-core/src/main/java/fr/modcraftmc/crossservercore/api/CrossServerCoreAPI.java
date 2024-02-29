@@ -3,18 +3,14 @@ package fr.modcraftmc.crossservercore.api;
 import com.google.gson.JsonObject;
 import com.mongodb.client.MongoCollection;
 import fr.modcraftmc.crossservercore.api.dataintegrity.ISecurityWatcher;
-import fr.modcraftmc.crossservercore.api.events.CrossServerCoreReadyEvent;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.api.message.IMessageHandler;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.IPlayersLocation;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.IServerCluster;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
-import net.minecraftforge.common.MinecraftForge;
 import org.bson.Document;
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -39,12 +35,12 @@ public class CrossServerCoreAPI {
         this.messageHandler = messageHandler;
         this.mongodbCollectionProvider = mongodbCollectionProvider;
         this.securityWatcher = securityWatcher;
-        instance = this;
     }
 
     public void initAPI() {
-        logger.info("Initializing crossservercore.api");
+        logger.info("Initializing cross-server-core api");
         isCrossServerCoreLoaded = true;
+        instance = this;
     }
 
     public void registerCrossMessage(String messageName, Function<JsonObject, ? extends BaseMessage> deserializer) {

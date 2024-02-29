@@ -67,7 +67,7 @@ publishing {
         }
     }
     publications {
-        maven(MavenPublication) { publication ->
+        crossServerCore(MavenPublication) { publication ->
             project.shadow.component(publication)
 
             groupId = "fr.modcraftmc"

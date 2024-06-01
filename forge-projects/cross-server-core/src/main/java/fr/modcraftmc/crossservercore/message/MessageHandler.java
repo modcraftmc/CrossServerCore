@@ -32,6 +32,7 @@ public class MessageHandler implements IMessageHandler {
         messageMap.put(PlayerJoined.MESSAGE_NAME, PlayerJoined::deserialize);
         messageMap.put(PlayerLeaved.MESSAGE_NAME, PlayerLeaved::deserialize);
         messageMap.put(TransferPlayer.MESSAGE_NAME, TransferPlayer::deserialize);
+        messageMap.put(TransferPlayerResponse.MESSAGE_NAME, TransferPlayerResponse::deserialize);
         messageMap.put(ProxyExtensionHandshake.MESSAGE_NAME, ProxyExtensionHandshake::deserialize);
         messageMap.put(ProxyExtensionHandshakeResponse.MESSAGE_NAME, ProxyExtensionHandshakeResponse::deserialize);
         messageMap.put(SendMessage.MESSAGE_NAME, SendMessage::deserialize);

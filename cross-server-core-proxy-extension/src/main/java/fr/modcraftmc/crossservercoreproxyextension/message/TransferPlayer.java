@@ -3,6 +3,7 @@ package fr.modcraftmc.crossservercoreproxyextension.message;
 import com.google.gson.JsonObject;
 import com.velocitypowered.api.proxy.ProxyServer;
 import fr.modcraftmc.crossservercoreproxyextension.CrossServerCoreProxy;
+import net.kyori.adventure.text.Component;
 
 public class TransferPlayer extends BaseMessage{
     public static final String MESSAGE_NAME = "transfer_player";
@@ -40,7 +41,9 @@ public class TransferPlayer extends BaseMessage{
         ProxyServer proxy = CrossServerCoreProxy.instance.getProxyServer();
         proxy.getPlayer(playerName).ifPresent( player -> {
             proxy.getServer(serverName).ifPresent( server -> {
-                player.createConnectionRequest(server).connect();
+                player.createConnectionRequest(server).connect().thenAccept((result) -> {
+                    CrossServerCoreProxy.instance.sendMessageToServer(new TransferPlayerResponse(serverName, playerName, result.isSuccessful(), result.getReasonComponent().orElse(Component.empty())), serverName);
+                });
             });
         });
     }

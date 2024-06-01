@@ -50,4 +50,20 @@ public class TransferPlayerResponse extends BaseMessage {
     public void handle() {
         MinecraftForge.EVENT_BUS.post(new TransferPlayerResponseEvent(this));
     }
+
+    public String serverName() {
+        return serverName;
+    }
+
+    public String playerName() {
+        return playerName;
+    }
+
+    public boolean isSuccessful() {
+        return isSuccessful;
+    }
+
+    public String transferError() {
+        return transferError;
+    }
 }

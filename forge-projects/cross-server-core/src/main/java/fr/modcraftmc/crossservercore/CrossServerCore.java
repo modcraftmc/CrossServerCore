@@ -12,14 +12,9 @@ import fr.modcraftmc.crossservercore.mongodb.MongodbConnection;
 import fr.modcraftmc.crossservercore.mongodb.MongodbConnectionBuilder;
 import fr.modcraftmc.crossservercore.networkdiscovery.PlayersLocation;
 import fr.modcraftmc.crossservercore.networkdiscovery.ServerCluster;
-import fr.modcraftmc.crossservercore.networking.Network;
 import fr.modcraftmc.crossservercore.rabbitmq.*;
 import fr.modcraftmc.crossservercore.api.CrossServerCoreProxyExtensionAPI;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
-import net.minecraft.commands.synchronization.ArgumentTypeInfo;
-import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraft.commands.synchronization.SingletonArgumentInfo;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -36,7 +31,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkConstants;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.slf4j.Logger;
 
@@ -63,8 +57,6 @@ public class CrossServerCore {
 
     private static final CrossServerCoreProxyExtension crossServerCoreProxyExtension = new CrossServerCoreProxyExtension();
 
-    private static final Network network = new Network();
-
     public CrossServerCore() {
         CrossServerCore.LOGGER.info("CrossServerCore is here !");
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
@@ -77,7 +69,6 @@ public class CrossServerCore {
         MinecraftForge.EVENT_BUS.addListener(CrossServerCore::onPlayerLeave);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 
-        network.Init();
     }
 
     @SubscribeEvent

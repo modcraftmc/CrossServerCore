@@ -8,5 +8,4 @@ pluginManagement {
 rootProject.name = "CrossServerCore"
 
 include 'forge-projects:cross-server-core'
-include 'forge-projects:cross-server-core-client-compat'
 include 'cross-server-core-proxy-extension'

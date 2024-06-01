@@ -1,7 +1,6 @@
 package fr.modcraftmc.crossservercore.networking;
 
 import fr.modcraftmc.crossservercore.networking.packets.IPacket;
-import fr.modcraftmc.crossservercore.networking.packets.PacketUpdateClusterPlayers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -17,7 +16,7 @@ public class Network {
             .simpleChannel();
 
     public void Init() {
-        channel.registerMessage(0, PacketUpdateClusterPlayers.class, IPacket::encode, PacketUpdateClusterPlayers::decode, IPacket::handle);
+        //channel.registerMessage(0, PacketUpdateClusterPlayers.class, IPacket::encode, PacketUpdateClusterPlayers::decode, IPacket::handle);
     }
 
     public <MSG> void sendToServer(MSG message) {

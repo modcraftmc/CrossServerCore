@@ -40,7 +40,6 @@ public class PlayersLocation implements IPlayersLocation {
         else {
             this.playersLocation.put(player, location);
             location.addPlayer(player);
-            CrossServerCore.updatePlayersListToClients();
         }
 
         playerJoinedEvent.forEach(event -> event.accept(player, location));
@@ -52,7 +51,6 @@ public class PlayersLocation implements IPlayersLocation {
             server.removePlayer(player);
             this.playersLocation.remove(player);
             playerLeavedEvent.forEach(event -> event.accept(player, server));
-            CrossServerCore.updatePlayersListToClients();
         }
     }
 

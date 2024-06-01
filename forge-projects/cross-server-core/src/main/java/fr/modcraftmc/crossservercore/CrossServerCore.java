@@ -2,7 +2,6 @@ package fr.modcraftmc.crossservercore;
 
 import com.mojang.logging.LogUtils;
 import fr.modcraftmc.crossservercore.api.CrossServerCoreAPI;
-import fr.modcraftmc.crossservercore.api.arguments.NetworkPlayerArgument;
 import fr.modcraftmc.crossservercore.api.events.CrossServerCoreReadyEvent;
 import fr.modcraftmc.crossservercore.dataintegrity.SecurityWatcher;
 import fr.modcraftmc.crossservercore.message.MessageHandler;
@@ -14,7 +13,6 @@ import fr.modcraftmc.crossservercore.mongodb.MongodbConnectionBuilder;
 import fr.modcraftmc.crossservercore.networkdiscovery.PlayersLocation;
 import fr.modcraftmc.crossservercore.networkdiscovery.ServerCluster;
 import fr.modcraftmc.crossservercore.networking.Network;
-import fr.modcraftmc.crossservercore.networking.packets.PacketUpdateClusterPlayers;
 import fr.modcraftmc.crossservercore.rabbitmq.*;
 import fr.modcraftmc.crossservercore.api.CrossServerCoreProxyExtensionAPI;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
@@ -43,8 +41,6 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -68,11 +64,6 @@ public class CrossServerCore {
     private static final CrossServerCoreProxyExtension crossServerCoreProxyExtension = new CrossServerCoreProxyExtension();
 
     private static final Network network = new Network();
-    private static final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENT_TYPES = DeferredRegister.create(Registry.COMMAND_ARGUMENT_TYPE_REGISTRY, "crossservercore");
-
-    static {
-        CrossServerCore.ARGUMENT_TYPES.register("network_player", () -> ArgumentTypeInfos.registerByClass(NetworkPlayerArgument.class, SingletonArgumentInfo.contextFree(NetworkPlayerArgument::new)));
-    }
 
     public CrossServerCore() {
         CrossServerCore.LOGGER.info("CrossServerCore is here !");
@@ -86,7 +77,6 @@ public class CrossServerCore {
         MinecraftForge.EVENT_BUS.addListener(CrossServerCore::onPlayerLeave);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 
-        ARGUMENT_TYPES.register(modEventBus);
         network.Init();
     }
 
@@ -212,13 +202,6 @@ public class CrossServerCore {
 
     public void onServerStop(ServerStoppingEvent event){
         serverCluster.detach();
-    }
-
-    public static void updatePlayersListToClients(){
-        if(ServerLifecycleHooks.getCurrentServer() == null) return;
-
-        PacketUpdateClusterPlayers packetUpdateClusterPlayers = new PacketUpdateClusterPlayers(serverCluster.playersLocation.getAllPlayers());
-        network.sendToAllPlayers(packetUpdateClusterPlayers);
     }
 
     public static void onPreLogin(PlayerNegotiationEvent event){

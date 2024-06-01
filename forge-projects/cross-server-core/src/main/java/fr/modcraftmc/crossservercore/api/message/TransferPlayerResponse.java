@@ -1,8 +1,7 @@
-package fr.modcraftmc.crossservercore.message;
+package fr.modcraftmc.crossservercore.api.message;
 
 import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.api.events.TransferPlayerResponseEvent;
-import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.MinecraftForge;
 

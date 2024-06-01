@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.api.message.SendMessage;
+import fr.modcraftmc.crossservercore.api.message.TransferPlayerResponse;
 import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqDirectSubscriber;
 import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqSubscriber;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;

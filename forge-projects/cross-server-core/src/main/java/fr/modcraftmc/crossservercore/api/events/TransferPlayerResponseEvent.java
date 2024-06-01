@@ -1,6 +1,6 @@
 package fr.modcraftmc.crossservercore.api.events;
 
-import fr.modcraftmc.crossservercore.message.TransferPlayerResponse;
+import fr.modcraftmc.crossservercore.api.message.TransferPlayerResponse;
 import net.minecraftforge.eventbus.api.Event;
 
 public class TransferPlayerResponseEvent extends Event {

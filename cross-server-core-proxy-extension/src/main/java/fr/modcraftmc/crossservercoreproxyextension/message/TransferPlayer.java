@@ -3,42 +3,30 @@ package fr.modcraftmc.crossservercoreproxyextension.message;
 import com.google.gson.JsonObject;
 import com.velocitypowered.api.proxy.ProxyServer;
 import fr.modcraftmc.crossservercoreproxyextension.CrossServerCoreProxy;
+import fr.modcraftmc.crossservercoreproxyextension.annotation.AutoRegister;
+import fr.modcraftmc.crossservercoreproxyextension.annotation.AutoSerialize;
 
+import java.util.UUID;
+
+@AutoRegister("transfer_player")
 public class TransferPlayer extends BaseMessage{
-    public static final String MESSAGE_NAME = "transfer_player";
 
-    public String playerName;
+    @AutoSerialize
+    public UUID playerUUID;
+    @AutoSerialize
     public String serverName;
 
-    public TransferPlayer(String playerName, String serverName) {
-        super(MESSAGE_NAME);
-        this.playerName = playerName;
+    public TransferPlayer() {}
+
+    public TransferPlayer(UUID playerUUID, String serverName) {
+        this.playerUUID = playerUUID;
         this.serverName = serverName;
     }
 
     @Override
-    protected JsonObject serialize() {
-        JsonObject jsonObject = super.serialize();
-        jsonObject.addProperty("serverName", serverName);
-        jsonObject.addProperty("playerName", playerName);
-        return jsonObject;
-    }
-
-    @Override
-    public String getMessageName() {
-        return MESSAGE_NAME;
-    }
-
-    public static TransferPlayer deserialize(JsonObject json) {
-        String serverName = json.get("serverName").getAsString();
-        String playerName = json.get("playerName").getAsString();
-        return new TransferPlayer(playerName, serverName);
-    }
-
-    @Override
-    protected void handle() {
+    public void handle() {
         ProxyServer proxy = CrossServerCoreProxy.instance.getProxyServer();
-        proxy.getPlayer(playerName).ifPresent( player -> {
+        proxy.getPlayer(playerUUID).ifPresent( player -> {
             proxy.getServer(serverName).ifPresent( server -> {
                 player.createConnectionRequest(server).connect();
             });

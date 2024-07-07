@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 public class ConfigManager {
-    public static final String CONFIG_FILE_NAME = "datasync-config.toml";
+    public static final String CONFIG_FILE_NAME = "cross-server-core-config.toml";
     private static Toml config;
     public static boolean isLoaded = false;
 
@@ -30,6 +30,10 @@ public class ConfigManager {
 
         try {
             serverName = config.getString("server_name");
+
+            if(serverName.equals("proxy"))
+                throw new RuntimeException("Server name cannot be 'proxy'");
+
             rabbitmqConfigData = config.getTable("rabbitmq").to(RabbitmqConfigData.class);
             mongodbConfigData = config.getTable("mongodb").to(MongodbConfigData.class);
         } catch (Exception e) {

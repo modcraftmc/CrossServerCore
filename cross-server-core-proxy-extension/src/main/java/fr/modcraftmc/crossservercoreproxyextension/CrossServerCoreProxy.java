@@ -9,6 +9,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import fr.modcraftmc.crossservercoreproxyextension.message.BaseMessage;
 import fr.modcraftmc.crossservercoreproxyextension.message.MessageHandler;
+import fr.modcraftmc.crossservercoreproxyextension.message.autoserializer.MessageAutoPropertySerializer;
 import fr.modcraftmc.crossservercoreproxyextension.rabbitmq.*;
 import org.slf4j.Logger;
 
@@ -31,6 +32,8 @@ public class CrossServerCoreProxy {
     private final Path dataDirectory;
 
     private RabbitmqConnection rabbitmqConnection;
+    private MessageHandler messageHandler = new MessageHandler();
+    private MessageAutoPropertySerializer messageAutoPropertySerializer = new MessageAutoPropertySerializer();
     public List<Runnable> onConfigLoad = new ArrayList<>();
 
     @Inject
@@ -41,11 +44,16 @@ public class CrossServerCoreProxy {
         this.logger = logger;
     }
 
+    public MessageAutoPropertySerializer getMessageAutoPropertySerializer() {
+        return messageAutoPropertySerializer;
+    }
+
     @Subscribe
     public void onInitialize(ProxyInitializeEvent event) {
         logger.info("CrossServerCoreProxy initializing !");
-        MessageHandler.init();
         loadConfig();
+        messageAutoPropertySerializer.init();
+        messageHandler.init();
 
         server.getEventManager().register(this, new EventRegister(this));
     }
@@ -123,7 +131,7 @@ public class CrossServerCoreProxy {
 
     public void sendMessageToServer(BaseMessage message, String serverName){
         try {
-            RabbitmqDirectPublisher.instance.publish(serverName, message.serializeToString());
+            RabbitmqDirectPublisher.instance.publish(serverName, message.serialize().toString());
         } catch (IOException e) {
             logger.error("Error while sending message to server %s : %s".formatted(serverName, e.getMessage()));
         }

@@ -14,7 +14,6 @@ public class SendMessage extends BaseMessage {
     public String playerName;
 
     public SendMessage(Component message, String playerName) {
-        super(MESSAGE_NAME);
         this.message = message;
         this.playerName = playerName;
     }
@@ -35,12 +34,6 @@ public class SendMessage extends BaseMessage {
         Component message = Component.Serializer.fromJson(json.get("message").getAsString());
         String playerName = json.get("playerName").getAsString();
         return new SendMessage(message, playerName);
-    }
-
-    public void send(){
-        CrossServerCore.getPlayersLocation().getPlayerLocation(playerName).ifPresent(server -> {
-            server.sendMessage(this.serializeToString());
-        });
     }
 
     @Override

@@ -66,6 +66,7 @@ public class RabbitmqConnectionBuilder {
         factory.setUsername(username);
         factory.setPassword(password);
         factory.setVirtualHost(virtualHost);
+        factory.setAutomaticRecoveryEnabled(true);
         Connection connection = factory.newConnection();
         ((Recoverable) connection).addRecoveryListener(new RecoveryListener() {
             @Override

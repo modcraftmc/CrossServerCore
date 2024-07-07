@@ -1,7 +1,10 @@
 package fr.modcraftmc.crossservercore;
 
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
 import fr.modcraftmc.crossservercore.message.TransferPlayer;
 import fr.modcraftmc.crossservercore.api.ICrossServerCoreProxyExtension;
+import fr.modcraftmc.crossservercore.message.TransferPlayerEvent;
 
 public class CrossServerCoreProxyExtension implements ICrossServerCoreProxyExtension {
     private boolean proxyExtensionEnabled = false;
@@ -14,11 +17,14 @@ public class CrossServerCoreProxyExtension implements ICrossServerCoreProxyExten
         return proxyExtensionEnabled;
     }
 
-    public void transferPlayer(String playerName, String serverName){
+    public void transferPlayer(ISyncPlayer player, ISyncServer serverDestination){
         if(!proxyExtensionEnabled){
             CrossServerCore.LOGGER.warn("Trying to transfer a player but the proxy extension is not enabled");
             return;
         }
-        CrossServerCore.sendProxyMessage(new TransferPlayer(playerName, serverName));
+
+        TransferPlayerEvent transferPlayerEvent = new TransferPlayerEvent(player, serverDestination);
+        CrossServerCore.getServerCluster().sendMessageExceptCurrent(transferPlayerEvent);
+        CrossServerCore.sendProxyMessage(new TransferPlayer(player, serverDestination));
     }
 }

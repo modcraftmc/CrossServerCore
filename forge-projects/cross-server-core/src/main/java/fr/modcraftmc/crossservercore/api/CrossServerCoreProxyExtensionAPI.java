@@ -1,27 +1,32 @@
 package fr.modcraftmc.crossservercore.api;
 
+import com.mojang.logging.LogUtils;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
 import org.slf4j.Logger;
 
 public class CrossServerCoreProxyExtensionAPI {
-    public static CrossServerCoreProxyExtensionAPI instance;
+    private static final Logger logger = LogUtils.getLogger();
+    private static boolean loaded = false;
+    public static ICrossServerCoreProxyExtension proxyExtension;
 
+    public static void initProxyExtensionAPI(ICrossServerCoreProxyExtension api_proxyExtension) {
+        logger.info("Initializing CrossServerCoreProxyExtension API");
 
-    private Logger logger;
-    public ICrossServerCoreProxyExtension proxyExtension;
+        proxyExtension = api_proxyExtension;
 
-    public CrossServerCoreProxyExtensionAPI(Logger logger, ICrossServerCoreProxyExtension proxyExtension) {
-        this.logger = logger;
-        instance = this;
-
-        logger.info("Enabling CrossServerCoreProxyExtension API");
-        this.proxyExtension = proxyExtension;
+        loaded = true;
     }
 
-    public boolean isProxyExtensionEnabled() {
+    public static boolean isProxyExtensionEnabled() {
         return proxyExtension.isProxyExtensionEnabled();
     }
 
-    public void transferPlayer(String playerName, String serverName){
-        proxyExtension.transferPlayer(playerName, serverName);
+    public static void transferPlayer(ISyncPlayer player, ISyncServer server){
+        proxyExtension.transferPlayer(player, server);
+    }
+
+    public static boolean isLoaded() {
+        return loaded;
     }
 }

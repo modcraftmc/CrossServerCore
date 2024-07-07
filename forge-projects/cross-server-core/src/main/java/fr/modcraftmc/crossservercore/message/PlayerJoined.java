@@ -1,49 +1,40 @@
 package fr.modcraftmc.crossservercore.message;
 
-import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.CrossServerCore;
+import fr.modcraftmc.crossservercore.api.annotation.AutoRegister;
+import fr.modcraftmc.crossservercore.api.annotation.AutoSerialize;
+import fr.modcraftmc.crossservercore.api.events.PlayerJoinClusterEvent;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
+import fr.modcraftmc.crossservercore.networkdiscovery.SyncPlayer;
+import fr.modcraftmc.crossservercore.networkdiscovery.SyncServer;
+import net.minecraftforge.common.MinecraftForge;
 
+import java.util.UUID;
+
+@AutoRegister("PlayerJoined")
 public class PlayerJoined extends BaseMessage {
-    public static final String MESSAGE_NAME = "PlayerJoined";
 
-    public final String playerName;
-    public final String serverName;
+    @AutoSerialize
+    public String playerName;
 
-    public PlayerJoined(String playerName, String serverName) {
-        super(MESSAGE_NAME);
+    @AutoSerialize
+    public UUID playerUUID;
+
+    @AutoSerialize
+    public SyncServer server;
+
+    PlayerJoined() {}
+
+    public PlayerJoined(UUID playerUUID, String playerName, SyncServer server) {
+        this.playerUUID = playerUUID;
         this.playerName = playerName;
-        this.serverName = serverName;
-    }
-
-    @Override
-    protected JsonObject serialize() {
-        JsonObject jsonObject = super.serialize();
-        jsonObject.addProperty("serverName", serverName);
-        jsonObject.addProperty("playerName", playerName);
-        return jsonObject;
-    }
-
-    public static PlayerJoined deserialize(JsonObject json) {
-        String serverName = json.get("serverName").getAsString();
-        String playerName = json.get("playerName").getAsString();
-        return new PlayerJoined(playerName, serverName);
+        this.server = server;
     }
 
     @Override
     public void handle() {
-        CrossServerCore.getServerCluster().getServer(serverName).ifPresentOrElse(
-        syncServer -> {
-            CrossServerCore.LOGGER.debug(String.format("Player %s joined server %s", playerName, serverName));
-            CrossServerCore.getPlayersLocation().setPlayerLocation(playerName, syncServer);
-        },
-        () -> {
-            CrossServerCore.getPlayersLocation().removePlayer(playerName);
-        });
-    }
-
-    @Override
-    public String getMessageName() {
-        return MESSAGE_NAME;
+        CrossServerCore.LOGGER.debug(String.format("Player %s joined server %s", playerName, server.getName()));
+        SyncPlayer player = CrossServerCore.getServerCluster().setPlayerLocation(playerUUID, playerName, server);
+        MinecraftForge.EVENT_BUS.post(new PlayerJoinClusterEvent(player));
     }
 }

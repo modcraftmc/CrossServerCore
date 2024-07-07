@@ -23,6 +23,7 @@ public class RabbitmqDirectPublisher {
     }
 
     public void publish(String routingKey, String message) throws IOException {
+        CrossServerCore.LOGGER.info("sending : " + message); //todo: delete
         CrossServerCore.LOGGER.debug(String.format("Publishing message to %s with routing key %s", References.DIRECT_EXCHANGE_NAME, routingKey));
         rabbitmqChannel.basicPublish(References.DIRECT_EXCHANGE_NAME, routingKey, null, message.getBytes());
     }

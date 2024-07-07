@@ -1,37 +1,27 @@
 package fr.modcraftmc.crossservercore.message;
 
 import com.google.gson.JsonObject;
+import fr.modcraftmc.crossservercore.api.annotation.AutoRegister;
+import fr.modcraftmc.crossservercore.api.annotation.AutoSerialize;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
 
+import java.util.UUID;
+
+@AutoRegister("transfer_player")
 public class TransferPlayer extends BaseMessage {
-    public static final String MESSAGE_NAME = "transfer_player";
 
-    public String playerName;
+    @AutoSerialize
+    public UUID playerUUID;
+    @AutoSerialize
     public String serverName;
 
-    public TransferPlayer(String playerName, String serverName) {
-        super(MESSAGE_NAME);
-        this.playerName = playerName;
-        this.serverName = serverName;
-    }
+    public TransferPlayer() {}
 
-    @Override
-    protected JsonObject serialize() {
-        JsonObject jsonObject = super.serialize();
-        jsonObject.addProperty("serverName", serverName);
-        jsonObject.addProperty("playerName", playerName);
-        return jsonObject;
-    }
-
-    @Override
-    public String getMessageName() {
-        return MESSAGE_NAME;
-    }
-
-    public static TransferPlayer deserialize(JsonObject json) {
-        String serverName = json.get("serverName").getAsString();
-        String playerName = json.get("playerName").getAsString();
-        return new TransferPlayer(playerName, serverName);
+    public TransferPlayer(ISyncPlayer player, ISyncServer server) {
+        this.playerUUID = player.getUUID();
+        this.serverName = server.getName();
     }
 
     @Override

@@ -3,7 +3,7 @@ package fr.modcraftmc.crossservercore.networkdiscovery;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
-import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqDirectPublisher;
+import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqDirectStream;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
 
 import java.io.IOException;
@@ -21,11 +21,7 @@ public class SyncServer implements ISyncServer {
 
     @Override
     public void sendMessage(BaseMessage message) {
-        try {
-            RabbitmqDirectPublisher.instance.publish(serverName, message.serialize().toString());
-        } catch (IOException e) {
-            CrossServerCore.LOGGER.error(String.format("Error while publishing message to rabbitmq cannot send message to server %s : %s", serverName, e.getMessage()));
-        }
+        CrossServerCore.getMessageStreamsManager().sendDirectMessage(serverName, message.serialize().toString());
     }
 
     public void addPlayer(SyncPlayer playerName){

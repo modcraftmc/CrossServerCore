@@ -2,14 +2,10 @@ package fr.modcraftmc.crossservercore.message;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.reflect.ReflectionAccessor;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.ReflectionUtil;
 import fr.modcraftmc.crossservercore.api.annotation.AutoRegister;
 import fr.modcraftmc.crossservercore.api.message.SendMessage;
-import fr.modcraftmc.crossservercore.message.autoserializer.MessageAutoPropertySerializer;
-import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqDirectSubscriber;
-import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqSubscriber;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.api.message.IMessageHandler;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -18,7 +14,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -27,32 +22,27 @@ public class MessageHandler implements IMessageHandler {
     private final Map<String, Function<JsonObject, ? extends BaseMessage>> messageMap = new HashMap<>();
     private Gson GSON = new Gson();
 
-    public MessageHandler(){
-    }
-
     public void init(){
 
         messageMap.put(SendMessage.MESSAGE_NAME, SendMessage::deserialize);
 
         registerAutoMessage();
 
-        RabbitmqDirectSubscriber.instance.subscribe(CrossServerCore.getServerName(), (consumerTag, message) -> {
-            CrossServerCore.LOGGER.info("Received message: " + new String(message.getBody())); //todo: delete
-            CrossServerCore.LOGGER.debug("Received message: " + new String(message.getBody()));
-            String messageJson = new String(message.getBody(), StandardCharsets.UTF_8);
+        CrossServerCore.getMessageStreamsManager().subscribeDirectMessage(CrossServerCore.getServerName(), (message) -> {
+            CrossServerCore.LOGGER.info("Received message: " + message); //todo: delete
+            CrossServerCore.LOGGER.debug("Received message: " + message);
             try {
-                handle(messageJson);
+                handle(message);
             } catch (Exception e) {
                 CrossServerCore.LOGGER.error("Error while handling message", e);
             }
         });
 
-        RabbitmqSubscriber.instance.subscribe((consumerTag, message) -> {
-            CrossServerCore.LOGGER.info("Received message: " + new String(message.getBody())); //todo: delete
-            CrossServerCore.LOGGER.debug("Received message: " + new String(message.getBody()));
-            String messageJson = new String(message.getBody(), StandardCharsets.UTF_8);
+        CrossServerCore.getMessageStreamsManager().subscribeBroadcastMessage((message) -> {
+            CrossServerCore.LOGGER.info("Received message: " + message); //todo: delete
+            CrossServerCore.LOGGER.debug("Received message: " + message);
             try {
-                handle(messageJson);
+                handle(message);
             } catch (Exception e) {
                 CrossServerCore.LOGGER.error("Error while handling message", e);
             }

@@ -50,7 +50,7 @@ public class CrossServerCoreProxy {
 
     @Subscribe
     public void onInitialize(ProxyInitializeEvent event) {
-        logger.info("CrossServerCoreProxy initializing !");
+        logger.info("Cross Server Core Proxy initializing !");
         loadConfig();
         messageAutoPropertySerializer.init();
         messageHandler.init();
@@ -60,7 +60,7 @@ public class CrossServerCoreProxy {
 
     @Subscribe
     public void onShutdown(ProxyShutdownEvent event) {
-        logger.info("DataSync shutting down !");
+        logger.info("Cross Server Core Proxy shutting down !");
         rabbitmqConnection.close();
     }
 

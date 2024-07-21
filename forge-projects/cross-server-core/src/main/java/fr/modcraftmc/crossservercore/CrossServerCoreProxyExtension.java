@@ -13,7 +13,7 @@ public class CrossServerCoreProxyExtension implements ICrossServerCoreProxyExten
         proxyExtensionEnabled = true;
     }
 
-    public boolean isProxyExtensionEnabled() {
+    public boolean isEnable() {
         return proxyExtensionEnabled;
     }
 

@@ -1,21 +1,21 @@
 package fr.modcraftmc.crossservercore;
 
 import com.mojang.logging.LogUtils;
-import fr.modcraftmc.crossservercore.api.CrossServerCoreAPI;
 import fr.modcraftmc.crossservercore.api.events.CrossServerCoreReadyEvent;
 import fr.modcraftmc.crossservercore.dataintegrity.SecurityWatcher;
+import fr.modcraftmc.crossservercore.events.MongodbConnectionReadyEvent;
+import fr.modcraftmc.crossservercore.events.RabbitmqConnectionReadyEvent;
 import fr.modcraftmc.crossservercore.message.MessageHandler;
 import fr.modcraftmc.crossservercore.message.PlayerJoined;
 import fr.modcraftmc.crossservercore.message.PlayerLeaved;
 import fr.modcraftmc.crossservercore.message.ProxyExtensionHandshake;
 import fr.modcraftmc.crossservercore.message.autoserializer.MessageAutoPropertySerializer;
+import fr.modcraftmc.crossservercore.message.streams.MessageStreamsManager;
 import fr.modcraftmc.crossservercore.mongodb.MongodbConnection;
 import fr.modcraftmc.crossservercore.mongodb.MongodbConnectionBuilder;
 import fr.modcraftmc.crossservercore.networkdiscovery.ServerCluster;
-import fr.modcraftmc.crossservercore.networkdiscovery.SyncPlayer;
 import fr.modcraftmc.crossservercore.networkdiscovery.SyncServer;
 import fr.modcraftmc.crossservercore.rabbitmq.*;
-import fr.modcraftmc.crossservercore.api.CrossServerCoreProxyExtensionAPI;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -37,30 +37,29 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.LogManager;
 
 @Mod("crossservercore")
 public class CrossServerCore {
     public static final String MOD_ID = "crossservercore";
     public static final Logger LOGGER = LogUtils.getLogger();
-    private static final ServerCluster serverCluster = new ServerCluster();
-    private static final MessageHandler messageHandler = new MessageHandler();
-    private static final MessageAutoPropertySerializer messageAutoPropertySerializer = new MessageAutoPropertySerializer();
-    private static final SecurityWatcher SynchronizationSecurityWatcher = new SecurityWatcher("synchronization security watcher");;
 
     private static String serverName;
     private static SyncServer syncServer;
 
+    private static final CrossServerCoreProxyExtension crossServerCoreProxyExtension = new CrossServerCoreProxyExtension();
+
     private static MongodbConnection mongodbConnection;
     private static RabbitmqConnection rabbitmqConnection;
 
-    private static final CrossServerCoreProxyExtension crossServerCoreProxyExtension = new CrossServerCoreProxyExtension();
+    private static final ServerCluster serverCluster = new ServerCluster();
+    private static final MessageHandler messageHandler = new MessageHandler();
+    private static final MessageAutoPropertySerializer messageAutoPropertySerializer = new MessageAutoPropertySerializer();
+    private static final SecurityWatcher SynchronizationSecurityWatcher = new SecurityWatcher("synchronization security watcher");;
+    private static final MessageStreamsManager messageStreamsManager = new MessageStreamsManager();
 
     public CrossServerCore() {
-        CrossServerCore.LOGGER.info("CrossServerCore is here !");
+        CrossServerCore.LOGGER.info("Cross Server Core is here !");
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::serverSetup);
@@ -74,7 +73,10 @@ public class CrossServerCore {
 
     @SubscribeEvent
     public void serverSetup(FMLDedicatedServerSetupEvent event){
+        loadConfig();
+    }
 
+    private static void initializeSynchronizationSecurityWatcher() {
         SynchronizationSecurityWatcher.registerOnInsecureEvent(() -> {
             kickAllPlayers("CrossServerCore is not secure, you cannot join the server. Reason(s) : \n" + SynchronizationSecurityWatcher.getReason());
             CrossServerCore.LOGGER.error("Synchronization security is not ensured, server is now inaccessible.");
@@ -95,20 +97,18 @@ public class CrossServerCore {
             }).start();
         });
         SynchronizationSecurityWatcher.registerOnSecureEvent(() -> CrossServerCore.LOGGER.warn("Synchronization security is ensured again, server is now accessible"));
-
-        loadConfig();
     }
 
     @SubscribeEvent
     public void serverStarted(ServerStartedEvent event) {
         CrossServerCore.LOGGER.debug("Initializing main modules");
-        initializeDatabaseConnection();
+        initializeMongodbConnection();
+        initializeRabbitmqConnection();
         initializeMessageSystem();
-        messageAutoPropertySerializer.init();
-        messageHandler.init();
-        initializeNetworkDiscovery();
+        initializeNetworkDiscoverySystem();
+        initializeSynchronizationSecurityWatcher();
         CrossServerCore.LOGGER.info("Main modules initialized");
-        initAPIs();
+        initializeAPIs();
 
         CrossServerCore.LOGGER.info("Checking for CrossServerCoreProxyExtension...");
         sendProxyMessage(new ProxyExtensionHandshake(serverName));
@@ -116,7 +116,17 @@ public class CrossServerCore {
         MinecraftForge.EVENT_BUS.post(new CrossServerCoreReadyEvent());
     }
 
-    private void initializeDatabaseConnection(){
+    public static void loadConfig(){
+        ConfigManager.loadConfigFile();
+        serverName = ConfigManager.serverName;
+    }
+
+    private void initializeMessageSystem() {
+        messageAutoPropertySerializer.init();
+        messageHandler.init();
+    }
+
+    private void initializeMongodbConnection(){
         CrossServerCore.LOGGER.debug("Connecting to MongoDB");
         ConfigManager.MongodbConfigData mongodbConfigData = ConfigManager.mongodbConfigData;
 
@@ -131,10 +141,12 @@ public class CrossServerCore {
                 .onHeartbeatFailed(() -> CrossServerCore.SynchronizationSecurityWatcher.addIssue(SecurityWatcher.MONGODB_CONNECTION_ISSUE))
                 .onHeartbeatSucceeded(() -> CrossServerCore.SynchronizationSecurityWatcher.removeIssue(SecurityWatcher.MONGODB_CONNECTION_ISSUE))
                 .build();
+
+        MinecraftForge.EVENT_BUS.post(new MongodbConnectionReadyEvent(mongodbConnection));
         CrossServerCore.LOGGER.info("Connected to MongoDB");
     }
 
-    private void initializeMessageSystem(){
+    private void initializeRabbitmqConnection(){
         CrossServerCore.LOGGER.debug("Connecting to RabbitMQ");
         ConfigManager.RabbitmqConfigData rabbitmqConfigData = ConfigManager.rabbitmqConfigData;
         if(rabbitmqConnection != null) rabbitmqConnection.close();
@@ -150,38 +162,30 @@ public class CrossServerCore {
                     .onHeartbeatSucceeded(() -> CrossServerCore.SynchronizationSecurityWatcher.removeIssue(SecurityWatcher.RABBITMQ_CONNECTION_ISSUE))
                     .build();
 
+            MinecraftForge.EVENT_BUS.post(new RabbitmqConnectionReadyEvent(rabbitmqConnection));
             CrossServerCore.LOGGER.info("Connected to RabbitMQ");
-            CrossServerCore.LOGGER.debug("Initializing message streams");
-            new RabbitmqPublisher(rabbitmqConnection);
-            new RabbitmqSubscriber(rabbitmqConnection);
-            new RabbitmqDirectPublisher(rabbitmqConnection);
-            new RabbitmqDirectSubscriber(rabbitmqConnection);
-            CrossServerCore.LOGGER.debug("Message streams initialized");
         } catch (IOException | TimeoutException e) {
             CrossServerCore.LOGGER.error("Error while connecting to RabbitMQ : %s".formatted(e.getMessage()));
             throw new RuntimeException(e);
         }
     }
 
-    public static void loadConfig(){
-        ConfigManager.loadConfigFile();
-        serverName = ConfigManager.serverName;
-    }
-
-    private void initializeNetworkDiscovery() {
+    private void initializeNetworkDiscoverySystem() {
         CrossServerCore.LOGGER.debug("Initializing network identity");
         syncServer = serverCluster.attach();
         CrossServerCore.LOGGER.info("Network identity initialized");
     }
 
-    public void initAPIs() {
-        CrossServerCoreAPI.initAPI(syncServer, serverCluster, messageHandler, messageAutoPropertySerializer, mongodbConnection::getCollection, SynchronizationSecurityWatcher);
-        CrossServerCoreProxyExtensionAPI.initProxyExtensionAPI(crossServerCoreProxyExtension);
+    public void initializeAPIs() {
+        new CrossServerCoreAPIImpl(syncServer, serverCluster, messageHandler, messageAutoPropertySerializer, SynchronizationSecurityWatcher);
+        new CrossServerCoreProxyExtensionAPIImpl(crossServerCoreProxyExtension);
     }
 
     public void onServerStop(ServerStoppingEvent event){
-        syncServer = null;
         serverCluster.detach();
+        mongodbConnection.close();
+        rabbitmqConnection.close();
+        syncServer = null;
     }
 
     public static void onPreLogin(PlayerNegotiationEvent event){
@@ -210,11 +214,7 @@ public class CrossServerCore {
     }
 
     public static void sendProxyMessage(BaseMessage message){
-        try {
-            RabbitmqDirectPublisher.instance.publish("proxy", message.serialize().toString());
-        } catch (IOException e) {
-            CrossServerCore.LOGGER.error("Failed to send proxy message {} : {}", message.getMessageName(), e.getMessage());
-        }
+        messageStreamsManager.sendDirectMessage("proxy", message.serialize().toString());
     }
 
     public static ServerCluster getServerCluster(){
@@ -240,11 +240,16 @@ public class CrossServerCore {
     public static MessageHandler getMessageHandler(){
         return messageHandler;
     }
+
     public static MessageAutoPropertySerializer getMessageAutoPropertySerializer() {
         return messageAutoPropertySerializer;
     }
 
     public static CrossServerCoreProxyExtension getCrossServerCoreProxyExtension() {
         return crossServerCoreProxyExtension;
+    }
+
+    public static MessageStreamsManager getMessageStreamsManager() {
+        return messageStreamsManager;
     }
 }

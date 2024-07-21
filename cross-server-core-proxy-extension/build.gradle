@@ -37,7 +37,12 @@ shadowJar {
     //relocate 'com.moandjiezana.toml', 'shaded.toml'
 
     archiveBaseName = "${project.name}"
-    archiveVersion = "${plugin_version}"
+
+    if(project.release_type == "snapshot") {
+        archiveVersion = "${plugin_version}-SNAPSHOT"
+    } else{
+        archiveVersion = "${plugin_version}"
+    }
 }
 
 jar.finalizedBy('shadowJar')

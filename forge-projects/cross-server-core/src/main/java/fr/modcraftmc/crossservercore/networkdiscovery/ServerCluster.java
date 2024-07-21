@@ -5,10 +5,8 @@ import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
 import fr.modcraftmc.crossservercore.message.AttachServer;
 import fr.modcraftmc.crossservercore.message.DetachServer;
-import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqPublisher;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.IServerCluster;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,11 +47,7 @@ public class ServerCluster implements IServerCluster {
     }
 
     public void broadcastMessage(BaseMessage message) {
-        try {
-            RabbitmqPublisher.instance.publish(message.serialize().toString());
-        } catch (IOException e) {
-            CrossServerCore.LOGGER.error(String.format("Error while publishing message to rabbitmq cannot broadcast message : %s", e.getMessage()));
-        }
+        CrossServerCore.getMessageStreamsManager().sendBroadcastMessage(message.serialize().toString());
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 
 public abstract class CrossServerCoreAPI {
@@ -63,9 +64,16 @@ public abstract class CrossServerCoreAPI {
     public static ISyncServer getServer() {
         return instance.server;
     }
+    public static Optional<? extends ISyncServer> getServer(String serverName) {
+        return instance.serverCluster.getServer(serverName);
+    }
 
     public static Optional<? extends ISyncPlayer> getPlayer(String playerName) {
         return instance.serverCluster.getPlayer(playerName);
+    }
+
+    public static Optional<? extends ISyncPlayer> getPlayer(UUID playerUUID) {
+        return instance.serverCluster.getPlayer(playerUUID);
     }
 
     public static List<? extends ISyncPlayer> getAllPlayersOnCluster() {
@@ -74,6 +82,9 @@ public abstract class CrossServerCoreAPI {
 
     public static ISecurityWatcher getSynchronizationSecurityWatcher() {
         return instance.securityWatcher;
+    }
+    public static IServerCluster getServerCluster() {
+        return instance.serverCluster;
     }
 
     public static IMessageAutoPropertySerializer getMessageAutoPropertySerializer() {

@@ -49,4 +49,13 @@ public class SyncServer implements ISyncServer {
     public int hashCode() {
         return serverName.hashCode();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof SyncServer syncServer) {
+            return syncServer.getName().equals(serverName);
+        }
+
+        return false;
+    }
 }

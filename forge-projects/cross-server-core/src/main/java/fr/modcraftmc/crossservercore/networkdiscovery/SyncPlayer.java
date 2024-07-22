@@ -45,4 +45,13 @@ public class SyncPlayer implements ISyncPlayer {
     public int hashCode() {
         return uuid.hashCode();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof SyncPlayer syncPlayer) {
+            return syncPlayer.getUUID().equals(uuid);
+        }
+
+        return false;
+    }
 }

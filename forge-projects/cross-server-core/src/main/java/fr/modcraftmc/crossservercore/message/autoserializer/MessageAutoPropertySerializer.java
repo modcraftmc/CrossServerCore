@@ -30,6 +30,7 @@ public class MessageAutoPropertySerializer implements IMessageAutoPropertySerial
         registerFieldSerializer(new SyncPlayerSerializer());
         registerFieldSerializer(new ListSerializer());
         registerFieldSerializer(new UUIDSerializer());
+        registerFieldSerializer(new OptionalSerializer());
     }
 
     public <T extends BaseMessage> JsonObject serializeAutoproperty(JsonObject json, T message) {

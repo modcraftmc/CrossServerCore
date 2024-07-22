@@ -24,8 +24,6 @@ public class MessageHandler implements IMessageHandler {
 
     public void init(){
 
-        messageMap.put(SendMessage.MESSAGE_NAME, SendMessage::deserialize);
-
         registerAutoMessage();
 
         CrossServerCore.getMessageStreamsManager().subscribeDirectMessage(CrossServerCore.getServerName(), (message) -> {

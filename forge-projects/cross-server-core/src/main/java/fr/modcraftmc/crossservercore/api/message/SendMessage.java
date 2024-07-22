@@ -1,47 +1,39 @@
 package fr.modcraftmc.crossservercore.api.message;
 
-import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.CrossServerCore;
+import fr.modcraftmc.crossservercore.api.annotation.AutoRegister;
+import fr.modcraftmc.crossservercore.api.annotation.AutoSerialize;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+@AutoRegister("send_message")
 public class SendMessage extends BaseMessage {
-    public static String MESSAGE_NAME = "send_message";
 
+    @AutoSerialize
     public Component message;
-    public String playerName;
+    @AutoSerialize
+    public ISyncPlayer player;
 
-    public SendMessage(Component message, String playerName) {
+    private SendMessage() {}
+
+    public SendMessage(Component message, ISyncPlayer player) {
         this.message = message;
-        this.playerName = playerName;
+        this.player = player;
     }
 
-    public JsonObject serialize() {
-        JsonObject json = super.serialize();
-        json.addProperty("message", Component.Serializer.toJson(message));
-        json.addProperty("playerName", playerName);
-        return json;
-    }
-
-    @Override
-    public String getMessageName() {
-        return MESSAGE_NAME;
-    }
-
-    public static SendMessage deserialize(JsonObject json) {
-        Component message = Component.Serializer.fromJson(json.get("message").getAsString());
-        String playerName = json.get("playerName").getAsString();
-        return new SendMessage(message, playerName);
+    public void send(){
+        player.getServer().sendMessage(this);
     }
 
     @Override
     public void handle() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        ServerPlayer player = server.getPlayerList().getPlayerByName(playerName);
-        if (player != null) {
-            player.sendSystemMessage(message, false);
+        ServerPlayer serverPlayer = server.getPlayerList().getPlayer(player.getUUID());
+        if (serverPlayer != null) {
+            serverPlayer.sendSystemMessage(message, false);
         }
     }
 }

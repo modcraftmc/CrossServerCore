@@ -6,6 +6,8 @@ import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
 import fr.modcraftmc.crossservercore.message.AttachServer;
 import fr.modcraftmc.crossservercore.message.DetachServer;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.IServerCluster;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,10 @@ public class ServerCluster implements IServerCluster {
         return Optional.empty();
     }
 
+    public SyncServerProxy getImmediateServer(String serverName) {
+        return new SyncServerProxy(serverName);
+    }
+
     public SyncServer attach(){
         SyncServer syncServer = new SyncServer(CrossServerCore.getServerName());
         addServer(syncServer);
@@ -41,9 +47,10 @@ public class ServerCluster implements IServerCluster {
     }
 
     public void detach(){
-        removeServer(CrossServerCore.getServerName());
         CrossServerCore.LOGGER.debug("Detaching from server cluster");
-        broadcastMessage(new DetachServer(CrossServerCore.getServerName()));
+        SyncServer server = CrossServerCore.getServer();
+        broadcastMessage(new DetachServer(server));
+        removeServer(server);
     }
 
     public void broadcastMessage(BaseMessage message) {
@@ -64,11 +71,12 @@ public class ServerCluster implements IServerCluster {
         }
     }
 
-    public void removeServer(String serverName) {
-        servers.removeIf(server -> server.getName().equals(serverName));
+    public void removeServer(SyncServer server) {
+        server.invalidate();
+        servers.remove(server);
     }
 
-    public Optional<SyncPlayer> internalGetPlayer(UUID playerUUID) {
+    public Optional<SyncPlayer> getPlayer(UUID playerUUID) {
         for (SyncPlayer syncPlayer : players) {
             if(syncPlayer.getUUID().equals(playerUUID))
                 return Optional.of(syncPlayer);
@@ -77,7 +85,7 @@ public class ServerCluster implements IServerCluster {
         return Optional.empty();
     }
 
-    public Optional<SyncPlayer> internalGetPlayer(String playerName) {
+    public Optional<SyncPlayer> getPlayer(String playerName) {
         for (SyncPlayer syncPlayer : players) {
             if(syncPlayer.getName().equals(playerName))
                 return Optional.of(syncPlayer);
@@ -86,24 +94,20 @@ public class ServerCluster implements IServerCluster {
         return Optional.empty();
     }
 
-    public Optional<ISyncPlayer> getPlayer(String playerName) {
-        Optional<SyncPlayer> player = internalGetPlayer(playerName);
-        if (player.isPresent())
-            return Optional.of(player.get());
-
-        return Optional.empty();
+    public Optional<SyncPlayer> getPlayer(ServerPlayer player) {
+        return getPlayer(player.getUUID());
     }
 
-    public Optional<ISyncPlayer> getPlayer(UUID playerUUID) {
-        Optional<SyncPlayer> player = internalGetPlayer(playerUUID);
-        if (player.isPresent())
-            return Optional.of(player.get());
+    public SyncPlayerProxy getImmediatePlayer(UUID playerUUID, String playerName) {
+        return new SyncPlayerProxy(playerUUID, playerName);
+    }
 
-        return Optional.empty();
+    public SyncPlayerProxy getImmediatePlayer(Player player) {
+        return new SyncPlayerProxy(player.getUUID(), player.getName().getString());
     }
 
     public SyncPlayer getOrCreatePlayer(UUID playerUUID, String playerName) {
-        Optional<SyncPlayer> optionalSyncPlayer = internalGetPlayer(playerUUID);
+        Optional<SyncPlayer> optionalSyncPlayer = getPlayer(playerUUID);
 
         if(!optionalSyncPlayer.isEmpty())
             return optionalSyncPlayer.get();
@@ -113,7 +117,7 @@ public class ServerCluster implements IServerCluster {
     }
 
     public SyncPlayer createPlayer(UUID playerUUID, String playerName, SyncServer location) {
-        Optional<SyncPlayer> optionalSyncPlayer = internalGetPlayer(playerUUID);
+        Optional<SyncPlayer> optionalSyncPlayer = getPlayer(playerUUID);
         if (optionalSyncPlayer.isPresent()) {
             CrossServerCore.LOGGER.warn("Attempt to create a player that already exists in the cluster.");
             return optionalSyncPlayer.get();
@@ -131,18 +135,18 @@ public class ServerCluster implements IServerCluster {
     }
 
     public void removePlayer(SyncPlayer player) {
-        player.setServer(null);
+        player.invalidate();
         players.remove(player);
     }
 
     public Optional<SyncPlayer> removePlayer(String player) {
-        Optional<SyncPlayer> syncPlayer = internalGetPlayer(player);
+        Optional<SyncPlayer> syncPlayer = getPlayer(player);
         syncPlayer.ifPresent(this::removePlayer);
 
         return syncPlayer;
     }
 
-    public List<? extends ISyncPlayer> getPlayers() {
+    public List<SyncPlayer> getPlayers() {
         return players;
     }
 }

@@ -200,7 +200,7 @@ public class CrossServerCore {
     }
 
     public static void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event){
-        serverCluster.internalGetPlayer(event.getEntity().getUUID()).ifPresent(player -> {
+        serverCluster.getPlayer(event.getEntity().getUUID()).ifPresent(player -> {
             serverCluster.sendMessage(new PlayerLeaved(player));
         });
     }
@@ -218,12 +218,16 @@ public class CrossServerCore {
         messageStreamsManager.sendDirectMessage("proxy", message.serialize().toString());
     }
 
-    public static ServerCluster getServerCluster(){
-        return serverCluster;
-    }
-
     public static String getServerName() {
         return serverName;
+    }
+
+    public static SyncServer getServer() {
+        return syncServer;
+    }
+
+    public static ServerCluster getServerCluster(){
+        return serverCluster;
     }
 
     public static MongodbConnection getMongodbConnection() {

@@ -7,9 +7,9 @@ import fr.modcraftmc.crossservercore.api.dataintegrity.ISecurityWatcher;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.api.message.IMessageHandler;
 import fr.modcraftmc.crossservercore.api.message.autoserializer.IMessageAutoPropertySerializer;
-import fr.modcraftmc.crossservercore.api.networkdiscovery.IServerCluster;
-import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
-import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.*;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import org.bson.Document;
 import org.slf4j.Logger;
 
@@ -64,8 +64,21 @@ public abstract class CrossServerCoreAPI {
     public static ISyncServer getServer() {
         return instance.server;
     }
+
+    public static ISyncServerProxy getImmediateServer(String serverName) {
+        return instance.serverCluster.getImmediateServer(serverName);
+    }
+
     public static Optional<? extends ISyncServer> getServer(String serverName) {
         return instance.serverCluster.getServer(serverName);
+    }
+
+    public static ISyncPlayerProxy getImmediatePlayer(UUID playerUUID, String playerName) {
+        return instance.serverCluster.getImmediatePlayer(playerUUID, playerName);
+    }
+
+    public static ISyncPlayerProxy getImmediatePlayer(Player player) {
+        return instance.serverCluster.getImmediatePlayer(player);
     }
 
     public static Optional<? extends ISyncPlayer> getPlayer(String playerName) {

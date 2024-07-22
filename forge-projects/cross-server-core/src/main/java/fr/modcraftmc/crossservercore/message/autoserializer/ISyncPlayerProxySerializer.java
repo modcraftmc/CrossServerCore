@@ -5,15 +5,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.api.message.autoserializer.FieldSerializer;
-import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayerProxy;
 
 import java.lang.reflect.Type;
 import java.util.UUID;
 
-public class ISyncPlayerSerializer extends FieldSerializer<ISyncPlayer> {
-
+public class ISyncPlayerProxySerializer extends FieldSerializer<ISyncPlayerProxy> {
     @Override
-    public JsonElement serialize(ISyncPlayer value) {
+    public JsonElement serialize(ISyncPlayerProxy value) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("playerName", new JsonPrimitive(value.getName()));
         jsonObject.add("playerUUID", new JsonPrimitive(value.getUUID().toString()));
@@ -21,16 +20,16 @@ public class ISyncPlayerSerializer extends FieldSerializer<ISyncPlayer> {
     }
 
     @Override
-    public ISyncPlayer deserialize(JsonElement json, Type type) {
+    public ISyncPlayerProxy deserialize(JsonElement json, Type typeOfT) {
         JsonObject jsonObject = json.getAsJsonObject();
         String playerName = jsonObject.get("playerName").getAsString();
         UUID playerUUID = UUID.fromString(jsonObject.get("playerUUID").getAsString());
 
-        return CrossServerCore.getServerCluster().getPlayer(playerUUID).orElseThrow();
+        return CrossServerCore.getServerCluster().getImmediatePlayer(playerUUID, playerName);
     }
 
     @Override
     public Type getType() {
-        return ISyncPlayer.class;
+        return ISyncPlayerProxy.class;
     }
 }

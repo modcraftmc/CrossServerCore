@@ -10,6 +10,7 @@ public class SyncPlayer implements ISyncPlayer {
     private UUID uuid;
     private String name;
     private SyncServer syncServer;
+    private boolean valid = true;
 
     public SyncPlayer(UUID uuid, String name, SyncServer syncServer) {
         this.uuid = uuid;
@@ -28,6 +29,9 @@ public class SyncPlayer implements ISyncPlayer {
 
     @Override
     public ISyncServer getServer() {
+        if(!valid)
+            throw new RuntimeException("Trying to get server of an invalid SyncPlayer");
+
         return syncServer;
     }
 
@@ -39,6 +43,10 @@ public class SyncPlayer implements ISyncPlayer {
             syncServer.addPlayer(this);
 
         this.syncServer = syncServer;
+    }
+
+    public void invalidate() {
+        valid = false;
     }
 
     @Override
@@ -53,5 +61,10 @@ public class SyncPlayer implements ISyncPlayer {
         }
 
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%s)", name, uuid);
     }
 }

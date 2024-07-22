@@ -1,26 +1,26 @@
 package fr.modcraftmc.crossservercore.message;
 
-import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.api.annotation.AutoRegister;
 import fr.modcraftmc.crossservercore.api.annotation.AutoSerialize;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
+import fr.modcraftmc.crossservercore.networkdiscovery.SyncServer;
 
 @AutoRegister("Detach")
 public class DetachServer extends BaseMessage {
 
     @AutoSerialize
-    public String serverName;
+    public SyncServer server;
 
     DetachServer() {}
 
-    public DetachServer(String serverName) {
-        this.serverName = serverName;
+    public DetachServer(SyncServer server) {
+        this.server = server;
     }
 
     @Override
     public void handle() {
-        CrossServerCore.getServerCluster().removeServer(serverName);
-        CrossServerCore.LOGGER.debug(String.format("Server %s have been detached from the network", serverName));
+        CrossServerCore.getServerCluster().removeServer(server);
+        CrossServerCore.LOGGER.debug(String.format("Server %s have been detached from the network", server.getName()));
     }
 }

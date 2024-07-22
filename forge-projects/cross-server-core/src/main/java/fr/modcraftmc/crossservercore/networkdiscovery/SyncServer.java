@@ -13,6 +13,7 @@ import java.util.List;
 public class SyncServer implements ISyncServer {
     private final String serverName;
     private final List<SyncPlayer> players;
+    private boolean valid = true;
 
     public SyncServer(String serverName) {
         this.serverName = serverName;
@@ -21,6 +22,9 @@ public class SyncServer implements ISyncServer {
 
     @Override
     public void sendMessage(BaseMessage message) {
+        if (!valid)
+            throw new RuntimeException("Trying to send message to an invalid SyncServer");
+
         CrossServerCore.getMessageStreamsManager().sendDirectMessage(serverName, message.serialize().toString());
     }
 
@@ -38,7 +42,14 @@ public class SyncServer implements ISyncServer {
     }
 
     public List<? extends ISyncPlayer> getPlayers() {
+        if(!valid)
+            throw new RuntimeException("Trying to get players of an invalid SyncServer");
+
         return players;
+    }
+
+    public void invalidate() {
+        valid = false;
     }
 
     public List<SyncPlayer> internalGetPlayers() {
@@ -57,5 +68,10 @@ public class SyncServer implements ISyncServer {
         }
 
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return serverName;
     }
 }

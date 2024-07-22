@@ -20,8 +20,12 @@ public class NetworkPlayerArgument implements ArgumentType<String> {
         return new NetworkPlayerArgument();
     }
 
-    public static String getNetworkPlayer(CommandContext<?> context, String player) {
+    public static String getNetworkPlayerName(CommandContext<?> context, String player) {
         return context.getArgument(player, String.class);
+    }
+
+    public static ISyncPlayer getNetworkPlayer(CommandContext<?> context, String player) {
+        return CrossServerCoreAPI.getPlayer(context.getArgument(player, String.class)).orElseThrow();
     }
 
     @Override

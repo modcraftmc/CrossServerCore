@@ -5,4 +5,5 @@ import org.bson.Document;
 
 public interface ISharedDataStore {
     public MongoCollection<Document> access() throws SharedDataStoreNotReadyException;
+    public MongoCollection<Document> accessOrThrow();
 }

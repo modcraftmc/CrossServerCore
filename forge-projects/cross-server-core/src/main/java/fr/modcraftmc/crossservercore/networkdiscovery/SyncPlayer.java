@@ -40,4 +40,9 @@ public class SyncPlayer implements ISyncPlayer {
 
         this.syncServer = syncServer;
     }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
 }

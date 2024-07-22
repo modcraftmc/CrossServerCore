@@ -44,4 +44,9 @@ public class SyncServer implements ISyncServer {
     public List<SyncPlayer> internalGetPlayers() {
         return players;
     }
+
+    @Override
+    public int hashCode() {
+        return serverName.hashCode();
+    }
 }

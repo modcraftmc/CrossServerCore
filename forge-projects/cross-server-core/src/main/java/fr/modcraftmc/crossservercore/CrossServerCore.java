@@ -25,6 +25,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerNegotiationEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.IExtensionPoint;
@@ -65,9 +66,9 @@ public class CrossServerCore {
         modEventBus.addListener(this::serverSetup);
 
         MinecraftForge.EVENT_BUS.addListener(this::onServerStop);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST ,CrossServerCore::onPlayerJoin);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST ,CrossServerCore::onPlayerLeave);
         MinecraftForge.EVENT_BUS.addListener(CrossServerCore::onPreLogin);
-        MinecraftForge.EVENT_BUS.addListener(CrossServerCore::onPlayerJoin);
-        MinecraftForge.EVENT_BUS.addListener(CrossServerCore::onPlayerLeave);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
     }
 

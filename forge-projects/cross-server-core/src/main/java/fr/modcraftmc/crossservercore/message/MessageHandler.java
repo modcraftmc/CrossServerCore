@@ -10,6 +10,7 @@ import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.api.message.IMessageHandler;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -76,7 +77,9 @@ public class MessageHandler implements IMessageHandler {
     public <T extends BaseMessage> void registerFullAutoCrossMessage(Class<T> messageClass){
         Supplier<T> defaultMessage = () -> {
             try {
-                return messageClass.getDeclaredConstructor().newInstance();
+                Constructor<T> constructor = messageClass.getDeclaredConstructor();
+                constructor.setAccessible(true);
+                return constructor.newInstance();
             } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             } catch (NoSuchMethodException e) {

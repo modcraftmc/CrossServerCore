@@ -68,7 +68,7 @@ public class CrossServerCore {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::serverSetup);
 
-        MinecraftForge.EVENT_BUS.addListener(this::onServerStop);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST ,this::onServerStop);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST ,CrossServerCore::onPlayerJoin);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST ,CrossServerCore::onPlayerLeave);
         MinecraftForge.EVENT_BUS.addListener(CrossServerCore::onPreLogin);

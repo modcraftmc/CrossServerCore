@@ -12,13 +12,7 @@ import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
 
 import java.util.concurrent.CompletableFuture;
 
-public class NetworkPlayerArgument implements ArgumentType<String> {
-    public NetworkPlayerArgument() {
-    }
-
-    public static NetworkPlayerArgument networkPlayer() {
-        return new NetworkPlayerArgument();
-    }
+public class NetworkPlayerArgument {
 
     public static String getNetworkPlayerName(CommandContext<?> context, String player) {
         return context.getArgument(player, String.class);
@@ -28,13 +22,7 @@ public class NetworkPlayerArgument implements ArgumentType<String> {
         return CrossServerCoreAPI.getPlayer(context.getArgument(player, String.class)).orElseThrow();
     }
 
-    @Override
-    public String parse(StringReader reader) throws CommandSyntaxException {
-        return reader.readString();
-    }
-
-    @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder suggestionsBuilder) {
+    public static <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder suggestionsBuilder) {
         for (ISyncPlayer player : CrossServerCoreAPI.getAllPlayersOnCluster()) {
             suggestionsBuilder.suggest(player.getName());
         }

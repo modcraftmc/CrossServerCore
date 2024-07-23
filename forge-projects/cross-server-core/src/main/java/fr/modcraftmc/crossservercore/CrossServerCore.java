@@ -200,7 +200,7 @@ public class CrossServerCore {
 
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event){
         SyncPlayer player = CrossServerCore.getServerCluster().setPlayerLocation(event.getEntity().getUUID(), event.getEntity().getName().getString(), CrossServerCore.syncServer);
-        MinecraftForge.EVENT_BUS.post(new PlayerJoinClusterEvent(player));
+        MinecraftForge.EVENT_BUS.post(new PlayerJoinClusterEvent(player, true));
         serverCluster.sendMessageExceptCurrent(new PlayerJoined(event.getEntity().getUUID(), event.getEntity().getName().getString(), CrossServerCore.syncServer));
     }
 
@@ -208,7 +208,7 @@ public class CrossServerCore {
         serverCluster.getPlayer(event.getEntity().getUUID()).ifPresent(player -> {
             serverCluster.sendMessageExceptCurrent(new PlayerLeaved(player));
             CrossServerCore.getServerCluster().removePlayer(player);
-            MinecraftForge.EVENT_BUS.post(new PlayerLeaveClusterEvent(player));
+            MinecraftForge.EVENT_BUS.post(new PlayerLeaveClusterEvent(player, true));
         });
     }
 

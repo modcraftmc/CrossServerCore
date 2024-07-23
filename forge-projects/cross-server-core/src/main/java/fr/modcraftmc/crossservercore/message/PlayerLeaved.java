@@ -24,6 +24,6 @@ public class PlayerLeaved extends BaseMessage {
     public void handle() {
         CrossServerCore.LOGGER.debug(String.format("Player %s leaved server %s", player.getName(), player.getServer().getName()));
         CrossServerCore.getServerCluster().removePlayer(player);
-        MinecraftForge.EVENT_BUS.post(new PlayerLeaveClusterEvent(player));
+        MinecraftForge.EVENT_BUS.post(new PlayerLeaveClusterEvent(player, false));
     }
 }

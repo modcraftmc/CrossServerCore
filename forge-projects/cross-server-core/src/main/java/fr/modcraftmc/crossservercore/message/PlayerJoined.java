@@ -35,6 +35,6 @@ public class PlayerJoined extends BaseMessage {
     public void handle() {
         CrossServerCore.LOGGER.debug(String.format("Player %s joined server %s", playerName, server.getName()));
         SyncPlayer player = CrossServerCore.getServerCluster().setPlayerLocation(playerUUID, playerName, server);
-        MinecraftForge.EVENT_BUS.post(new PlayerJoinClusterEvent(player));
+        MinecraftForge.EVENT_BUS.post(new PlayerJoinClusterEvent(player, false));
     }
 }

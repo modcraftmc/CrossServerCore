@@ -2,6 +2,8 @@ package fr.modcraftmc.crossservercore;
 
 import com.mojang.logging.LogUtils;
 import fr.modcraftmc.crossservercore.api.events.CrossServerCoreReadyEvent;
+import fr.modcraftmc.crossservercore.api.events.PlayerJoinClusterEvent;
+import fr.modcraftmc.crossservercore.api.events.PlayerLeaveClusterEvent;
 import fr.modcraftmc.crossservercore.dataintegrity.SecurityWatcher;
 import fr.modcraftmc.crossservercore.events.MongodbConnectionReadyEvent;
 import fr.modcraftmc.crossservercore.events.RabbitmqConnectionReadyEvent;
@@ -14,6 +16,7 @@ import fr.modcraftmc.crossservercore.message.streams.MessageStreamsManager;
 import fr.modcraftmc.crossservercore.mongodb.MongodbConnection;
 import fr.modcraftmc.crossservercore.mongodb.MongodbConnectionBuilder;
 import fr.modcraftmc.crossservercore.networkdiscovery.ServerCluster;
+import fr.modcraftmc.crossservercore.networkdiscovery.SyncPlayer;
 import fr.modcraftmc.crossservercore.networkdiscovery.SyncServer;
 import fr.modcraftmc.crossservercore.rabbitmq.*;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
@@ -196,12 +199,16 @@ public class CrossServerCore {
     }
 
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event){
-        serverCluster.sendMessage(new PlayerJoined(event.getEntity().getUUID(), event.getEntity().getName().getString(), CrossServerCore.syncServer));
+        SyncPlayer player = CrossServerCore.getServerCluster().setPlayerLocation(event.getEntity().getUUID(), event.getEntity().getName().getString(), CrossServerCore.syncServer);
+        MinecraftForge.EVENT_BUS.post(new PlayerJoinClusterEvent(player));
+        serverCluster.sendMessageExceptCurrent(new PlayerJoined(event.getEntity().getUUID(), event.getEntity().getName().getString(), CrossServerCore.syncServer));
     }
 
     public static void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event){
         serverCluster.getPlayer(event.getEntity().getUUID()).ifPresent(player -> {
-            serverCluster.sendMessage(new PlayerLeaved(player));
+            serverCluster.sendMessageExceptCurrent(new PlayerLeaved(player));
+            CrossServerCore.getServerCluster().removePlayer(player);
+            MinecraftForge.EVENT_BUS.post(new PlayerLeaveClusterEvent(player));
         });
     }
 

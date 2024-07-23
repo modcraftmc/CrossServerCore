@@ -1,4 +1,4 @@
-package fr.modcraftmc.crossservercore.sharedpersistentdata;
+package fr.modcraftmc.crossservercore.api.sharedpersistentdata;
 
 import com.mongodb.client.MongoCollection;
 import fr.modcraftmc.crossservercore.CrossServerCore;
@@ -10,10 +10,6 @@ import net.minecraftforge.common.MinecraftForge;
 import org.bson.Document;
 
 public class SharedDataStore implements ISharedDataStore {
-    static {
-        new SharedDataStoreProviderImpl(SharedDataStore::new);
-    }
-
     private String id;
     private MongoCollection<Document> collection;
 

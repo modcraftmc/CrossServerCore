@@ -6,7 +6,7 @@ import fr.modcraftmc.crossservercore.api.message.autoserializer.FieldSerializer;
 
 import java.lang.reflect.Type;
 
-public class StringAutoSerializer extends FieldSerializer<String> {
+public class StringSerializer extends FieldSerializer<String> {
 
     @Override
     public JsonElement serialize(String value) {

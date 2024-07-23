@@ -22,8 +22,8 @@ public class MessageAutoPropertySerializer implements IMessageAutoPropertySerial
     public void init() {
         registerFieldSerializer(new BooleanSerializer());
         registerFieldSerializer(new FloatSerializer());
-        registerFieldSerializer(new IntAutoSerializer());
-        registerFieldSerializer(new StringAutoSerializer());
+        registerFieldSerializer(new IntSerializer());
+        registerFieldSerializer(new StringSerializer());
         registerFieldSerializer(new ISyncServerSerializer());
         registerFieldSerializer(new SyncServerSerializer());
         registerFieldSerializer(new ISyncPlayerSerializer());

@@ -20,6 +20,6 @@ public class FloatSerializer extends FieldSerializer<Float> {
 
     @Override
     public Type getType() {
-        return Float.class;
+        return float.class;
     }
 }

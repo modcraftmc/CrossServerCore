@@ -6,7 +6,7 @@ import fr.modcraftmc.crossservercore.api.message.autoserializer.FieldSerializer;
 
 import java.lang.reflect.Type;
 
-public class IntAutoSerializer extends FieldSerializer<Integer> {
+public class IntSerializer extends FieldSerializer<Integer> {
 
     @Override
     public JsonElement serialize(Integer value) {
@@ -20,6 +20,6 @@ public class IntAutoSerializer extends FieldSerializer<Integer> {
 
     @Override
     public Type getType() {
-        return Integer.class;
+        return int.class;
     }
 }

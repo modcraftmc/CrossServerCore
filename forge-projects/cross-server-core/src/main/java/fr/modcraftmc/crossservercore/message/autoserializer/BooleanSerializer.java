@@ -19,6 +19,6 @@ public class BooleanSerializer extends FieldSerializer<Boolean> {
 
     @Override
     public Type getType() {
-        return Boolean.class;
+        return boolean.class;
     }
 }

@@ -24,6 +24,11 @@ public class SyncPlayerProxy implements ISyncPlayerProxy {
         proxyName = name;
     }
 
+    public SyncPlayerProxy(ISyncPlayer player) {
+        proxyUUID = player.getUUID();
+        proxyName = player.getName();
+    }
+
     @Override
     public UUID getUUID() {
         return proxyUUID;
@@ -47,6 +52,11 @@ public class SyncPlayerProxy implements ISyncPlayerProxy {
     @Override
     public Optional<? extends ISyncPlayer> unproxy() {
         return CrossServerCore.getServerCluster().getPlayer(proxyUUID);
+    }
+
+    @Override
+    public ISyncPlayerProxy proxy() {
+        return new SyncPlayerProxy(proxyUUID, proxyName);
     }
 
     @Override

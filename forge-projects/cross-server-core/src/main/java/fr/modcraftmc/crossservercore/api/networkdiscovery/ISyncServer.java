@@ -9,4 +9,5 @@ public interface ISyncServer extends IMessageSender {
     public void sendMessage(BaseMessage message);
     public String getName();
     public List<? extends ISyncPlayer> getPlayers();
+    public ISyncServerProxy proxy();
 }

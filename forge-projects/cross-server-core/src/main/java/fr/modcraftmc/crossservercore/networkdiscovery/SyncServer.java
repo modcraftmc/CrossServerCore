@@ -3,6 +3,7 @@ package fr.modcraftmc.crossservercore.networkdiscovery;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServerProxy;
 import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqDirectStream;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
 
@@ -46,6 +47,10 @@ public class SyncServer implements ISyncServer {
             throw new RuntimeException("Trying to get players of an invalid SyncServer");
 
         return players;
+    }
+
+    public ISyncServerProxy proxy() {
+        return new SyncServerProxy(serverName);
     }
 
     public void invalidate() {

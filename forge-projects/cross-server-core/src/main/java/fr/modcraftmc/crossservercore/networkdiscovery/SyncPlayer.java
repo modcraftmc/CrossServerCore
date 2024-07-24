@@ -2,6 +2,7 @@ package fr.modcraftmc.crossservercore.networkdiscovery;
 
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayerProxy;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
 
 import java.util.UUID;
@@ -43,6 +44,11 @@ public class SyncPlayer implements ISyncPlayer {
             syncServer.addPlayer(this);
 
         this.syncServer = syncServer;
+    }
+
+    @Override
+    public ISyncPlayerProxy proxy() {
+        return new SyncPlayerProxy(this);
     }
 
     public void invalidate() {

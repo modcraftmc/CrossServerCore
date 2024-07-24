@@ -47,6 +47,11 @@ public class SyncServerProxy implements ISyncServerProxy {
     }
 
     @Override
+    public ISyncServerProxy proxy() {
+        return new SyncServerProxy(proxyServerName);
+    }
+
+    @Override
     public int hashCode() {
         return proxyServerName.hashCode();
     }

@@ -84,7 +84,7 @@ vhost = <vhost> # The vhost of your RabbitMQ server ex: "cross-server-core-vhost
 
 Feel free to open an issue on this repository, I will try to help you as much as I can.
 
-You can also join the discord server [here](https://discord.gg/7Q5q3Q7) and contact us (It is primarily a minecraft server but just mention the name 'CrossServerCore' and I'll try to help you).
+You can also join the discord server [here](https://discord.com/invite/MpqPRAtJ) and contact us (It is primarily a minecraft server but just mention the name 'CrossServerCore' and I'll try to help you).
 
 # API
 

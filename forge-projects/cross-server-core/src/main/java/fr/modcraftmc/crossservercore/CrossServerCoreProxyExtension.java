@@ -4,7 +4,7 @@ import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
 import fr.modcraftmc.crossservercore.message.TransferPlayer;
 import fr.modcraftmc.crossservercore.api.ICrossServerCoreProxyExtension;
-import fr.modcraftmc.crossservercore.message.TransferPlayerEvent;
+import fr.modcraftmc.crossservercore.message.TransferPlayerEventMessage;
 
 public class CrossServerCoreProxyExtension implements ICrossServerCoreProxyExtension {
     private boolean proxyExtensionEnabled = false;
@@ -23,8 +23,8 @@ public class CrossServerCoreProxyExtension implements ICrossServerCoreProxyExten
             return;
         }
 
-        TransferPlayerEvent transferPlayerEvent = new TransferPlayerEvent(player, serverDestination);
-        CrossServerCore.getServerCluster().sendMessageExceptCurrent(transferPlayerEvent);
+        TransferPlayerEventMessage transferPlayerEventMessage = new TransferPlayerEventMessage(player.proxy(), serverDestination);
+        CrossServerCore.getServerCluster().sendMessageExceptCurrent(transferPlayerEventMessage);
         CrossServerCore.sendProxyMessage(new TransferPlayer(player, serverDestination));
     }
 }

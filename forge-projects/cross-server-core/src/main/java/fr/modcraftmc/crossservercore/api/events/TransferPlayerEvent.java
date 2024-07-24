@@ -1,23 +1,23 @@
 package fr.modcraftmc.crossservercore.api.events;
 
-import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayerProxy;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
 import net.minecraftforge.eventbus.api.Event;
 
 public class TransferPlayerEvent extends Event {
-    private ISyncPlayer player;
-    private ISyncServer serverDestination;
+    private ISyncPlayerProxy player;
+    private ISyncServer destination;
 
-    public TransferPlayerEvent(ISyncPlayer player, ISyncServer serverDestination) {
+    public TransferPlayerEvent(ISyncPlayerProxy player, ISyncServer destination) {
         this.player = player;
-        this.serverDestination = serverDestination;
+        this.destination = destination;
     }
 
-    public ISyncPlayer getPlayer() {
+    public ISyncPlayerProxy getPlayer() {
         return player;
     }
 
-    public ISyncServer getServerDestination() {
-        return serverDestination;
+    public ISyncServer getDestination() {
+        return destination;
     }
 }

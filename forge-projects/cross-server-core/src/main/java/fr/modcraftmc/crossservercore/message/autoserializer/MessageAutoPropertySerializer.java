@@ -34,6 +34,8 @@ public class MessageAutoPropertySerializer implements IMessageAutoPropertySerial
         registerFieldSerializer(new ISyncPlayerProxySerializer());
         registerFieldSerializer(new ISyncServerProxySerializer());
         registerFieldSerializer(new JsonElementSerializer());
+        registerFieldSerializer(new MapSerializer());
+        registerFieldSerializer(new CompoundTagSerializer());
     }
 
     public <T extends BaseMessage> JsonObject serializeAutoproperty(JsonObject json, T message) {
@@ -103,6 +105,14 @@ public class MessageAutoPropertySerializer implements IMessageAutoPropertySerial
             throw new RuntimeException("No deserializer found for type " + typeOfT);
         }
         return fieldSerializer.deserialize(json, typeOfT);
+    }
+
+    public <T> T deserializeObject(JsonElement json, Class<T> typeOfT) {
+        FieldSerializer<?> fieldSerializer = fieldSerializers.get(typeOfT);
+        if (fieldSerializer == null) {
+            throw new RuntimeException("No deserializer found for type " + typeOfT);
+        }
+        return (T) fieldSerializer.deserialize(json, typeOfT);
     }
 
     public Object deserializegenericObject(JsonElement json, ParameterizedType typeOfT) {

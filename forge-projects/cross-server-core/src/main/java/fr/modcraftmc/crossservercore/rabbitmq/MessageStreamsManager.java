@@ -1,11 +1,10 @@
-package fr.modcraftmc.crossservercore.message.streams;
+package fr.modcraftmc.crossservercore.rabbitmq;
 
 import com.mojang.datafixers.util.Pair;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.References;
+import fr.modcraftmc.crossservercore.api.rabbitmq.IMessageStreamsManager;
 import fr.modcraftmc.crossservercore.events.RabbitmqConnectionReadyEvent;
-import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqBroadcastStream;
-import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqDirectStream;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.IOException;
@@ -13,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class MessageStreamsManager {
-    RabbitmqDirectStream directStream;
-    RabbitmqBroadcastStream broadcastStream;
+public class MessageStreamsManager implements IMessageStreamsManager {
+    private RabbitmqDirectStream directStream;
+    private RabbitmqBroadcastStream broadcastStream;
 
     private boolean ready = false;
 
@@ -26,7 +25,7 @@ public class MessageStreamsManager {
         MinecraftForge.EVENT_BUS.addListener(this::onRabbitmqConnectionReady);
     }
 
-    public void onRabbitmqConnectionReady(RabbitmqConnectionReadyEvent event) {
+    private void onRabbitmqConnectionReady(RabbitmqConnectionReadyEvent event) {
         CrossServerCore.LOGGER.debug("Initializing message streams");
         directStream = new RabbitmqDirectStream(event.getRabbitmqConnection(), References.DIRECT_EXCHANGE_NAME);
         broadcastStream = new RabbitmqBroadcastStream(event.getRabbitmqConnection(), References.GLOBAL_EXCHANGE_NAME);

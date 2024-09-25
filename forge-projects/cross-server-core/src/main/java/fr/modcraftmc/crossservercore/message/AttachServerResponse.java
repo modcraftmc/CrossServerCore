@@ -3,9 +3,11 @@ package fr.modcraftmc.crossservercore.message;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.api.annotation.AutoRegister;
 import fr.modcraftmc.crossservercore.api.annotation.AutoSerialize;
+import fr.modcraftmc.crossservercore.api.events.SyncServerAttachEvent;
 import fr.modcraftmc.crossservercore.networkdiscovery.SyncPlayer;
 import fr.modcraftmc.crossservercore.networkdiscovery.SyncServer;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.List;
 
@@ -30,6 +32,8 @@ public class AttachServerResponse extends BaseMessage {
         for (SyncPlayer player : players) {
             player.setServer(syncServer);
         }
+
+        MinecraftForge.EVENT_BUS.post(new SyncServerAttachEvent(syncServer, SyncServerAttachEvent.AttachType.EXISTING));
         CrossServerCore.LOGGER.debug("Server %s responded and have been attached to the network");
     }
 }

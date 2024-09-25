@@ -2,15 +2,13 @@ package fr.modcraftmc.crossservercore.api;
 
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
-import com.mongodb.client.MongoCollection;
 import fr.modcraftmc.crossservercore.api.dataintegrity.ISecurityWatcher;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.api.message.IMessageHandler;
 import fr.modcraftmc.crossservercore.api.message.autoserializer.IMessageAutoPropertySerializer;
+import fr.modcraftmc.crossservercore.api.rabbitmq.IMessageStreamsManager;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.*;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import org.bson.Document;
 import org.slf4j.Logger;
 
 import java.util.List;
@@ -26,6 +24,7 @@ public abstract class CrossServerCoreAPI {
     protected ISyncServer server;
     protected IServerCluster serverCluster;
     protected IMessageHandler messageHandler;
+    protected IMessageStreamsManager messageStreamsManager;
     protected IMessageAutoPropertySerializer messageAutoPropertySerializer;
     protected ISecurityWatcher securityWatcher;
 
@@ -55,6 +54,14 @@ public abstract class CrossServerCoreAPI {
             return;
         }
         instance.serverCluster.getServer(serverName).ifPresent(server -> server.sendMessage(message));
+    }
+
+    public static void broadcastCrossMessage(BaseMessage message) {
+        if(!instance.messageHandler.isMessageRegistered(message.getMessageName())){
+            logger.warn("Trying to broadcast a message via API that is not registered (message id : {})", message.getMessageName());
+            return;
+        }
+        instance.messageStreamsManager.sendBroadcastMessage(message.serialize().toString());
     }
 
     public static String getServerName() {

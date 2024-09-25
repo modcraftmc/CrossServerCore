@@ -143,14 +143,14 @@ public class TransferData extends BaseMessage {
 
     @Override
     public void handle() {
-        //Do something with these data
+        //Do something with the data
     }
 }
 ```
 
 Let's explain the code above:
 - `@AutoRegister("transfer_data")`: This annotation is used to automatically register the message. The string parameter is the message name.
-- `@AutoSerialize`: This annotation is used to automatically serialize the field. (Only some types are supported by default, you can add your own (see below). By default, the supported types are: `String`, `int`, `double`, `float`, `boolean`, `UUID`, `Component` (from minecraft), `ISyncPlayer`, `ISyncServer`, `ISyncPlayerProxy`, `ISyncServerProxy`, `JsonElement`, `List`, `Optional`).
+- `@AutoSerialize`: This annotation is used to automatically serialize the field. (Only some types are supported by default, you can add your own (see below). By default, the supported types are: `String`, `int`, `double`, `float`, `boolean`, `UUID`, `CompoundTag`, `Component` (from minecraft), `ISyncPlayer`, `ISyncServer`, `ISyncPlayerProxy`, `ISyncServerProxy`, `JsonElement`, `List`, `Optional`, `Map`).
 - `private TransferPlayer() {}` is very important because the mod uses reflection to create the message and it needs a default constructor (it can be private).
 - `public void handle()`: This method is called when the message is received. `@AutoSerialize` fields are automatically filled with the data received.
 
@@ -270,7 +270,7 @@ See the `ListSerializer` or `Optional` implementation for an example.
 
 After creating the class, you need to register it.
 
-```java[CrossServerCoreAPIImpl.java](forge-projects%2Fcross-server-core%2Fsrc%2Fmain%2Fjava%2Ffr%2Fmodcraftmc%2Fcrossservercore%2FCrossServerCoreAPIImpl.java)
+```java
 public void onCrossServerCoreReady(CrossServerCoreReadyEvent event) {
         CrossServerCoreAPI.getMessageAutoPropertySerializer().registerFieldSerializer(new UUIDSerializer());
 }
@@ -366,6 +366,12 @@ This event is fired when a player is transfered between servers.
 
 - `ISyncPlayerProxy getPlayer()`: Get the player that is transfered. (A proxy is used to avoid invalidation during transfer)
 - `ISyncServer getDestination()`: Get the server the player is transfered to.
+
+#### SyncServerAttachEvent
+This event is fired when a server is attached to the cluster.
+
+- `ISyncServer getSyncServer()`: Get the server that is attached.
+- `AttachType getAttachType()`: Get the type of attachement: NEW (for new server, mean it just started) or EXISTING (for already existing server, was up before the current server).
 
 ### Commands
 

@@ -58,7 +58,7 @@ public class SyncServerProxy implements ISyncServerProxy {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof SyncServer syncServer) {
+        if (obj instanceof ISyncServer syncServer) {
             return syncServer.getName().equals(proxyServerName);
         }
 

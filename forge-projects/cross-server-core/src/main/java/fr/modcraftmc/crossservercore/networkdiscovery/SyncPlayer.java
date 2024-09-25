@@ -62,7 +62,7 @@ public class SyncPlayer implements ISyncPlayer {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof SyncPlayer syncPlayer) {
+        if (obj instanceof ISyncPlayer syncPlayer) {
             return syncPlayer.getUUID().equals(uuid);
         }
 

@@ -12,7 +12,7 @@ import fr.modcraftmc.crossservercore.message.PlayerJoined;
 import fr.modcraftmc.crossservercore.message.PlayerLeaved;
 import fr.modcraftmc.crossservercore.message.ProxyExtensionHandshake;
 import fr.modcraftmc.crossservercore.message.autoserializer.MessageAutoPropertySerializer;
-import fr.modcraftmc.crossservercore.message.streams.MessageStreamsManager;
+import fr.modcraftmc.crossservercore.rabbitmq.MessageStreamsManager;
 import fr.modcraftmc.crossservercore.mongodb.MongodbConnection;
 import fr.modcraftmc.crossservercore.mongodb.MongodbConnectionBuilder;
 import fr.modcraftmc.crossservercore.networkdiscovery.ServerCluster;
@@ -199,6 +199,9 @@ public class CrossServerCore {
     }
 
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event){
+        CrossServerCore.LOGGER.info("Player joined " + event.getEntity());
+        CrossServerCore.LOGGER.info("Player name " + event.getEntity().getName());
+        CrossServerCore.LOGGER.info("Player uuid " + event.getEntity().getUUID());
         SyncPlayer player = CrossServerCore.getServerCluster().setPlayerLocation(event.getEntity().getUUID(), event.getEntity().getName().getString(), CrossServerCore.syncServer);
         MinecraftForge.EVENT_BUS.post(new PlayerJoinClusterEvent(player, true));
         serverCluster.sendMessageExceptCurrent(new PlayerJoined(event.getEntity().getUUID(), event.getEntity().getName().getString(), CrossServerCore.syncServer));

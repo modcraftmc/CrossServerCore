@@ -50,22 +50,22 @@ subprojects {
         //rename 'mixin.refmap.json', 'datasync.mixin-refmap.json'
     }
 
-    if(project.name == 'cross-server-core'){
-        tasks.register('apiJar', Jar) {
-            archiveClassifier.set('api')
-            include '**/api/**'
-            from sourceSets.main.allSource
-            from sourceSets.main.output
-        }
-
-        tasks.register('sourcesJar', Jar) {
-            archiveClassifier.set('sources')
-            from sourceSets.main.allJava
-        }
-
-        artifacts {
-            archives apiJar
-            archives sourcesJar
-        }
-    }
+//    if(project.name == 'cross-server-core'){
+//        tasks.register('apiJar', Jar) {
+//            archiveClassifier.set('api')
+//            include '**/api/**'
+//            from sourceSets.main.allSource
+//            from sourceSets.main.output
+//        }
+//
+//        tasks.register('sourcesJar', Jar) {
+//            archiveClassifier.set('sources')
+//            from sourceSets.main.allJava
+//        }
+//
+//        artifacts {
+//            archives apiJar
+//            archives sourcesJar
+//        }
+//    }
 }

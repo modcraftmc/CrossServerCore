@@ -48,6 +48,23 @@ shadowJar {
     }
 }
 
+tasks.register('apiJar', Jar) {
+    archiveClassifier.set('api')
+    include '**/api/**'
+    from sourceSets.main.allSource
+    from sourceSets.main.output
+}
+
+tasks.register('sourcesJar', Jar) {
+    archiveClassifier.set('sources')
+    from sourceSets.main.allJava
+}
+
+artifacts {
+    archives apiJar
+    archives sourcesJar
+}
+
 jar.finalizedBy('shadowJar')
 
 

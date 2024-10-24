@@ -1,5 +1,6 @@
 plugins{
     id 'com.github.johnrengelman.shadow' version '7.+'
+    id 'maven-publish'
 }
 
 apply plugin: 'java'
@@ -45,8 +46,47 @@ shadowJar {
     }
 }
 
+tasks.register('sourcesJar', Jar) {
+    archiveClassifier.set('sources')
+    from sourceSets.main.allJava
+}
+
+artifacts {
+    archives sourcesJar
+}
+
 jar.finalizedBy('shadowJar')
 
 test {
     useJUnitPlatform()
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "ModcraftMaven"
+            if(project.release_type == "snapshot") {
+                url = "https://maven.modcraftmc.fr/snapshots"
+            } else{
+                url = "https://maven.modcraftmc.fr/releases"
+            }
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
+    }
+    publications {
+        crossServerCore(MavenPublication) { publication ->
+            project.shadow.component(publication)
+
+            groupId = "fr.modcraftmc"
+            artifactId = "cross-server-core-proxy-extension"
+            version = project.plugin_version
+
+            artifact sourcesJar{
+                classifier('sources')
+            }
+        }
+    }
 }

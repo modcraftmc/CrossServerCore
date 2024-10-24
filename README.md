@@ -59,8 +59,10 @@ To use it, you need to install the plugin on your proxy server.
 
 ### 1. Get a Cross Server Core Proxy Extension jar file.
 
-Well... currently I don't know how you can get one, I don't know how to manage the different version of this plugin so I don't know how to distribute it.
-I will try to find a solution for this. You still can compile one by yourself but if you are really interested in this project, you can open a simple issue and I'll find a solution.
+~~Well... currently I don't know how you can get one, I don't know how to manage the different version of this plugin so I don't know how to distribute it.
+I will try to find a solution for this. You still can compile one by yourself but if you are really interested in this project, you can open a simple issue and I'll find a solution.~~
+For the moment it is available on the [maven](https://maven.modcraftmc.fr/#/releases/fr/modcraftmc/cross-server-core-proxy-extension).
+(I will use the same version number as the mod. If a proxy version isn't available, which will be the case for many version, get the previous version. It should mean no changes were made to the proxy extension)
 
 ### 2. Put the jar file in your plugins folder.
 

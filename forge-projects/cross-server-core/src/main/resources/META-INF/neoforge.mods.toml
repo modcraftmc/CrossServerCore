@@ -1,4 +1,4 @@
-# This is an example neoforge.mods.toml file. It contains the data relating to the loading mods.
+# This is an example neoforge.neoforge.mods.toml file. It contains the data relating to the loading mods.
 # There are several mandatory fields (#mandatory), and many more that are optional (#optional).
 # The overall format is standard TOML format, v0.5.0.
 # Note that there are a couple of TOML lists in this file.
@@ -23,7 +23,7 @@ license="${mod_license}"
 modId="crossservercore" #mandatory
 
 # The version number of the mod
-version="${mod_version}" #mandatory
+version="2.0.0" #mandatory
 
 # A display name for the mod
 displayName="${mod_name}" #mandatory

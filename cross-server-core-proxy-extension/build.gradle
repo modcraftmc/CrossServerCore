@@ -1,10 +1,10 @@
 plugins{
-    id 'com.github.johnrengelman.shadow' version '7.+'
+    id 'com.gradleup.shadow' version '8.3+'
     id 'maven-publish'
 }
 
 apply plugin: 'java'
-apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.gradleup.shadow'
 
 configurations {
     // Create the library configuration, where our non-mod libraries will be added to
@@ -32,7 +32,7 @@ dependencies {
 
 shadowJar {
     configurations = [project.configurations.shade]
-    classifier = ''
+    archiveClassifier = ''
 
     //relocate 'org.mongodb.mongodb-driver-sync', 'shaded.mongodb-driver-sync'
     //relocate 'com.moandjiezana.toml', 'shaded.toml'
@@ -85,7 +85,7 @@ publishing {
             version = project.plugin_version
 
             artifact sourcesJar{
-                classifier('sources')
+                archiveClassifier.set('sources')
             }
         }
     }

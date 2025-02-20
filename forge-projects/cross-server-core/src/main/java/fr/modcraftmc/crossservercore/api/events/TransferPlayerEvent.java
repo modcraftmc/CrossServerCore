@@ -2,7 +2,7 @@ package fr.modcraftmc.crossservercore.api.events;
 
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayerProxy;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
 
 public class TransferPlayerEvent extends Event {
     private ISyncPlayerProxy player;

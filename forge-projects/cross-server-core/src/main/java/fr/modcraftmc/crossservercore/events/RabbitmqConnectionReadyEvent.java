@@ -1,7 +1,7 @@
 package fr.modcraftmc.crossservercore.events;
 
 import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqConnection;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
 
 public class RabbitmqConnectionReadyEvent extends Event {
     private RabbitmqConnection rabbitmqConnection;

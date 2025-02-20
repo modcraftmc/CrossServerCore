@@ -5,7 +5,7 @@ import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.References;
 import fr.modcraftmc.crossservercore.api.rabbitmq.IMessageStreamsManager;
 import fr.modcraftmc.crossservercore.events.RabbitmqConnectionReadyEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class MessageStreamsManager implements IMessageStreamsManager {
     private final List<Consumer<String>> broadcastSubscription = new ArrayList<>();
 
     public MessageStreamsManager() {
-        MinecraftForge.EVENT_BUS.addListener(this::onRabbitmqConnectionReady);
+        NeoForge.EVENT_BUS.addListener(this::onRabbitmqConnectionReady);
     }
 
     private void onRabbitmqConnectionReady(RabbitmqConnectionReadyEvent event) {

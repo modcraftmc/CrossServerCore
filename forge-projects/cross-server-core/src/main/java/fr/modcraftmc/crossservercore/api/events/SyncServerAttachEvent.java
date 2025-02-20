@@ -1,7 +1,7 @@
 package fr.modcraftmc.crossservercore.api.events;
 
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
 
 public class SyncServerAttachEvent extends Event {
     private ISyncServer syncServer;

@@ -8,31 +8,60 @@ buildscript {
 }
 
 plugins {
-    id 'eclipse'
+    id 'java-library'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '5.1.+' apply false
+    id 'net.neoforged.moddev' version '2.0.76'
 }
 
 subprojects {
-
-    apply plugin: 'net.minecraftforge.gradle'
+    apply plugin: 'java'
+    apply plugin: 'net.neoforged.moddev'
 
     println "Setup: ${project.name}";
 
-    version = "${mc_version}-${mod_version}"
+    version = "${minecraft_version}-${mod_version}"
 
-    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+    java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
-    dependencies {
-        minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url = uri('https://maven.neoforged.net/')}
     }
 
-    minecraft {
-        mappings channel: 'official', version: '1.19.2'
-        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    neoForge {
+        version = project.neo_version
+
+        parchment {
+            mappingsVersion = project.parchment_mappings_version
+            minecraftVersion = project.parchment_minecraft_version
+        }
+
+        accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
+
+        runs {
+            client {
+                client()
+            }
+        }
+
+        mods {
+            // define mod <-> source bindings
+            // these are used to tell the game which sources are for which mod
+            // mostly optional in a single mod project
+            // but multi mod projects should define one per mod
+            "${mod_id}" {
+                sourceSet(sourceSets.main)
+            }
+        }
     }
 
     sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+    configurations {
+        runtimeClasspath.extendsFrom localRuntime
+
+    }
 
     jar {
         manifest {

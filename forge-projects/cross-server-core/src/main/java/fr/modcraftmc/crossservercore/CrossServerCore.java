@@ -23,21 +23,18 @@ import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerNegotiationEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.IExtensionPoint;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.network.NetworkConstants;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerNegotiationEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -64,15 +61,14 @@ public class CrossServerCore {
 
     public CrossServerCore() {
         CrossServerCore.LOGGER.info("Cross Server Core is here !");
-        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        IEventBus modEventBus = ModLoadingContext.get().getActiveContainer().getEventBus();
         modEventBus.addListener(this::serverSetup);
 
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST ,this::onServerStop);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST ,CrossServerCore::onPlayerJoin);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST ,CrossServerCore::onPlayerLeave);
-        MinecraftForge.EVENT_BUS.addListener(CrossServerCore::onPreLogin);
-        MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST ,this::onServerStop);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST ,CrossServerCore::onPlayerJoin);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST ,CrossServerCore::onPlayerLeave);
+        NeoForge.EVENT_BUS.addListener(CrossServerCore::onPreLogin);
+        NeoForge.EVENT_BUS.addListener(this::serverStarted);
     }
 
     @SubscribeEvent
@@ -117,7 +113,7 @@ public class CrossServerCore {
         CrossServerCore.LOGGER.info("Checking for CrossServerCoreProxyExtension...");
         sendProxyMessage(new ProxyExtensionHandshake(serverName));
 
-        MinecraftForge.EVENT_BUS.post(new CrossServerCoreReadyEvent());
+        NeoForge.EVENT_BUS.post(new CrossServerCoreReadyEvent());
     }
 
     public static void loadConfig(){
@@ -146,7 +142,7 @@ public class CrossServerCore {
                 .onHeartbeatSucceeded(() -> CrossServerCore.SynchronizationSecurityWatcher.removeIssue(SecurityWatcher.MONGODB_CONNECTION_ISSUE))
                 .build();
 
-        MinecraftForge.EVENT_BUS.post(new MongodbConnectionReadyEvent(mongodbConnection));
+        NeoForge.EVENT_BUS.post(new MongodbConnectionReadyEvent(mongodbConnection));
         CrossServerCore.LOGGER.info("Connected to MongoDB");
     }
 
@@ -166,7 +162,7 @@ public class CrossServerCore {
                     .onHeartbeatSucceeded(() -> CrossServerCore.SynchronizationSecurityWatcher.removeIssue(SecurityWatcher.RABBITMQ_CONNECTION_ISSUE))
                     .build();
 
-            MinecraftForge.EVENT_BUS.post(new RabbitmqConnectionReadyEvent(rabbitmqConnection));
+            NeoForge.EVENT_BUS.post(new RabbitmqConnectionReadyEvent(rabbitmqConnection));
             CrossServerCore.LOGGER.info("Connected to RabbitMQ");
         } catch (IOException | TimeoutException e) {
             CrossServerCore.LOGGER.error("Error while connecting to RabbitMQ : %s".formatted(e.getMessage()));
@@ -203,7 +199,7 @@ public class CrossServerCore {
         CrossServerCore.LOGGER.info("Player name " + event.getEntity().getName());
         CrossServerCore.LOGGER.info("Player uuid " + event.getEntity().getUUID());
         SyncPlayer player = CrossServerCore.getServerCluster().setPlayerLocation(event.getEntity().getUUID(), event.getEntity().getName().getString(), CrossServerCore.syncServer);
-        MinecraftForge.EVENT_BUS.post(new PlayerJoinClusterEvent(player, true));
+        NeoForge.EVENT_BUS.post(new PlayerJoinClusterEvent(player, true));
         serverCluster.sendMessageExceptCurrent(new PlayerJoined(event.getEntity().getUUID(), event.getEntity().getName().getString(), CrossServerCore.syncServer));
     }
 
@@ -211,7 +207,7 @@ public class CrossServerCore {
         serverCluster.getPlayer(event.getEntity().getUUID()).ifPresent(player -> {
             serverCluster.sendMessageExceptCurrent(new PlayerLeaved(player));
             CrossServerCore.getServerCluster().removePlayer(player);
-            MinecraftForge.EVENT_BUS.post(new PlayerLeaveClusterEvent(player, true));
+            NeoForge.EVENT_BUS.post(new PlayerLeaveClusterEvent(player, true));
         });
     }
 

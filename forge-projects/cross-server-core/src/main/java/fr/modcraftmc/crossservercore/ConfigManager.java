@@ -1,7 +1,7 @@
 package fr.modcraftmc.crossservercore;
 
 import com.moandjiezana.toml.Toml;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.File;
 import java.io.FileOutputStream;

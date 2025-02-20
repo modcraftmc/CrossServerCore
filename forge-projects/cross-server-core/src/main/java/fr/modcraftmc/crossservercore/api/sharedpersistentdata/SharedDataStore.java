@@ -2,11 +2,8 @@ package fr.modcraftmc.crossservercore.api.sharedpersistentdata;
 
 import com.mongodb.client.MongoCollection;
 import fr.modcraftmc.crossservercore.CrossServerCore;
-import fr.modcraftmc.crossservercore.api.sharedpersistentdata.ISharedDataStore;
-import fr.modcraftmc.crossservercore.api.sharedpersistentdata.NotAccessibleException;
-import fr.modcraftmc.crossservercore.api.sharedpersistentdata.SharedDataStoreNotReadyException;
 import fr.modcraftmc.crossservercore.events.MongodbConnectionReadyEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import org.bson.Document;
 
 public class SharedDataStore implements ISharedDataStore {
@@ -22,7 +19,7 @@ public class SharedDataStore implements ISharedDataStore {
             collection = CrossServerCore.getMongodbConnection().getCollection(id);
             ready = true;
         } else {
-            MinecraftForge.EVENT_BUS.addListener(this::onMongodbConnectionReady);
+            NeoForge.EVENT_BUS.addListener(this::onMongodbConnectionReady);
         }
     }
 

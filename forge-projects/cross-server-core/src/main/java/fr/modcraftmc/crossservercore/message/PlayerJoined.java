@@ -7,7 +7,7 @@ import fr.modcraftmc.crossservercore.api.events.PlayerJoinClusterEvent;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.networkdiscovery.SyncPlayer;
 import fr.modcraftmc.crossservercore.networkdiscovery.SyncServer;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.UUID;
 
@@ -35,6 +35,6 @@ public class PlayerJoined extends BaseMessage {
     public void handle() {
         CrossServerCore.LOGGER.debug(String.format("Player %s joined server %s", playerName, server.getName()));
         SyncPlayer player = CrossServerCore.getServerCluster().setPlayerLocation(playerUUID, playerName, server);
-        MinecraftForge.EVENT_BUS.post(new PlayerJoinClusterEvent(player, false));
+        NeoForge.EVENT_BUS.post(new PlayerJoinClusterEvent(player, false));
     }
 }

@@ -5,7 +5,7 @@ import fr.modcraftmc.crossservercore.api.annotation.AutoSerialize;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayerProxy;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 
 @AutoRegister("transfer_player_event")
 public class TransferPlayerEventMessage extends BaseMessage {
@@ -26,6 +26,6 @@ public class TransferPlayerEventMessage extends BaseMessage {
 
     @Override
     public void handle() {
-        MinecraftForge.EVENT_BUS.post(new fr.modcraftmc.crossservercore.api.events.TransferPlayerEvent(player, destination));
+        NeoForge.EVENT_BUS.post(new fr.modcraftmc.crossservercore.api.events.TransferPlayerEvent(player, destination));
     }
 }

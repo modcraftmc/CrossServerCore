@@ -1,7 +1,7 @@
 package fr.modcraftmc.crossservercore.events;
 
 import fr.modcraftmc.crossservercore.mongodb.MongodbConnection;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
 
 public class MongodbConnectionReadyEvent extends Event {
     private MongodbConnection mongodbConnection;

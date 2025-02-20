@@ -5,10 +5,9 @@ import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.ReflectionUtil;
 import fr.modcraftmc.crossservercore.api.annotation.AutoRegister;
-import fr.modcraftmc.crossservercore.api.message.SendMessage;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.api.message.IMessageHandler;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

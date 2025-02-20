@@ -1,14 +1,14 @@
 plugins{
-    id 'com.github.johnrengelman.shadow' version '7.+'
+    id 'com.gradleup.shadow' version '8.3.6'
 }
 
-apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.gradleup.shadow'
 
 group = 'fr.modcraftmc'
 if(project.release_type == "snapshot") {
-    version = "${mc_version}-${mod_version}-SNAPSHOT"
+    version = "${minecraft_version}-${mod_version}-SNAPSHOT"
 } else{
-    version = "${mc_version}-${mod_version}"
+    version = "${minecraft_version}-${mod_version}"
 }
 
 configurations {
@@ -23,30 +23,36 @@ configurations {
 
 dependencies {
     //shade project(path: ':cross-server-core-api')
-    shade(group: 'com.rabbitmq', name: 'amqp-client', version: '[5.16.0]')
-    shade(group: 'org.mongodb', name: 'mongodb-driver-sync', version: '[4.9.0]')
-    shade(group: 'com.moandjiezana.toml', name: 'toml4j', version: '[0.7.2]')
+
+//    shade(group: 'com.rabbitmq', name: 'amqp-client', version: '[5.16.0,)')
+//    shade(group: 'org.mongodb', name: 'mongodb-driver-sync', version: '[5.3.0,)')
+//    shade(group: 'com.moandjiezana.toml', name: 'toml4j', version: '[0.7.0,)')
+    jarJar(implementation(group: 'com.rabbitmq', name: 'amqp-client', version: '[5.16.0,)'))
+    jarJar(implementation(group: 'org.mongodb', name: 'mongodb-driver-sync', version: '[5.3.0,)'))
+    jarJar(implementation(group: 'com.moandjiezana.toml', name: 'toml4j', version: '[0.7.0,)'))
 }
 
-shadowJar {
-    configurations = [project.configurations.shade]
-    classifier = ''
 
-    relocate 'org.mongodb.mongodb-driver-sync', 'shaded.mongodb-driver-sync'
-    relocate 'com.moandjiezana.toml', 'shaded.toml'
-    dependencies {
-        exclude(dependency('org.slf4j:slf4j-api'))
-        exclude(dependency('com.google.code.gson:gson'))
-        exclude(dependency('com.mojang:brigadier'))
-    }
 
-    archiveBaseName = "${project.name}"
-    if(project.release_type == "snapshot") {
-        archiveVersion = "${mc_version}-${mod_version}-SNAPSHOT"
-    } else{
-        archiveVersion = "${mc_version}-${mod_version}"
-    }
-}
+//shadowJar {
+//    configurations = [project.configurations.shade]
+//    archiveClassifier = ''
+//
+////    relocate 'org.mongodb.mongodb-driver-sync', 'shaded.mongodb-driver-sync'
+////    relocate 'com.moandjiezana.toml', 'shaded.toml'
+//    dependencies {
+//        exclude(dependency('org.slf4j:slf4j-api'))
+//        exclude(dependency('com.google.code.gson:gson'))
+//        exclude(dependency('com.mojang:brigadier'))
+//    }
+//
+//    archiveBaseName = "${project.name}"
+//    if(project.release_type == "snapshot") {
+//        archiveVersion = "${minecraft_version}-${mod_version}-SNAPSHOT"
+//    } else{
+//        archiveVersion = "${minecraft_version}-${mod_version}"
+//    }
+//}
 
 tasks.register('apiJar', Jar) {
     archiveClassifier.set('api')
@@ -65,7 +71,7 @@ artifacts {
     archives sourcesJar
 }
 
-jar.finalizedBy('shadowJar')
+//jar.finalizedBy('shadowJar')
 
 
 publishing {
@@ -92,10 +98,10 @@ publishing {
             version = project.mod_version
 
             artifact sourcesJar{
-                classifier('sources')
+                archiveClassifier.set('sources')
             }
             artifact apiJar {
-                classifier('api')
+                archiveClassifier.set('api')
             }
         }
     }

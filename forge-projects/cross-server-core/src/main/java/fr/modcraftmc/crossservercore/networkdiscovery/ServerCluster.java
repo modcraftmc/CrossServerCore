@@ -2,10 +2,9 @@ package fr.modcraftmc.crossservercore.networkdiscovery;
 
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
-import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.IServerCluster;
 import fr.modcraftmc.crossservercore.message.AttachServer;
 import fr.modcraftmc.crossservercore.message.DetachServer;
-import fr.modcraftmc.crossservercore.api.networkdiscovery.IServerCluster;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 

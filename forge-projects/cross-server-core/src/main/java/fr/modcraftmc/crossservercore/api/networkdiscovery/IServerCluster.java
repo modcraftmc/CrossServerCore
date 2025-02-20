@@ -2,7 +2,6 @@ package fr.modcraftmc.crossservercore.api.networkdiscovery;
 
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.api.message.IMessageSender;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;

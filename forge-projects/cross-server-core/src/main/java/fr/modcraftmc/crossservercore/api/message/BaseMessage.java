@@ -4,9 +4,6 @@ import com.google.gson.JsonObject;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.api.annotation.AutoRegister;
 import fr.modcraftmc.crossservercore.message.NoopMessage;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 public abstract class BaseMessage {
     public JsonObject serialize() {

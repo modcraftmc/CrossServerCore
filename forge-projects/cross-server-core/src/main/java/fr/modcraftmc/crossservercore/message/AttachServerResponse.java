@@ -4,9 +4,9 @@ import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.api.annotation.AutoRegister;
 import fr.modcraftmc.crossservercore.api.annotation.AutoSerialize;
 import fr.modcraftmc.crossservercore.api.events.SyncServerAttachEvent;
+import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.networkdiscovery.SyncPlayer;
 import fr.modcraftmc.crossservercore.networkdiscovery.SyncServer;
-import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.List;

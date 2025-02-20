@@ -8,7 +8,6 @@ import fr.modcraftmc.crossservercore.api.message.autoserializer.FieldSerializer;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 

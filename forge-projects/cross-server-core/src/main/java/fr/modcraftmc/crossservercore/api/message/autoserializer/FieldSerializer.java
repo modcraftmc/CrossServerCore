@@ -1,6 +1,7 @@
 package fr.modcraftmc.crossservercore.api.message.autoserializer;
 
 import com.google.gson.JsonElement;
+
 import java.lang.reflect.Type;
 
 public abstract class FieldSerializer<T> {

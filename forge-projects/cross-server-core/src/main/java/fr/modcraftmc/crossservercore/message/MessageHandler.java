@@ -11,7 +11,6 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

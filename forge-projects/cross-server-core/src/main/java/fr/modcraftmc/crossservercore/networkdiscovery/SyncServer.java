@@ -3,11 +3,9 @@ package fr.modcraftmc.crossservercore.networkdiscovery;
 import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
-import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServerProxy;
-import fr.modcraftmc.crossservercore.rabbitmq.RabbitmqDirectStream;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
+import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServerProxy;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,9 +1,9 @@
 package fr.modcraftmc.crossservercore;
 
+import fr.modcraftmc.crossservercore.api.ICrossServerCoreProxyExtension;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;
 import fr.modcraftmc.crossservercore.message.TransferPlayer;
-import fr.modcraftmc.crossservercore.api.ICrossServerCoreProxyExtension;
 import fr.modcraftmc.crossservercore.message.TransferPlayerEventMessage;
 
 public class CrossServerCoreProxyExtension implements ICrossServerCoreProxyExtension {

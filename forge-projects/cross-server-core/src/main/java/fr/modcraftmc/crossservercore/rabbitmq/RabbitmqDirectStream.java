@@ -3,7 +3,6 @@ package fr.modcraftmc.crossservercore.rabbitmq;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.DeliverCallback;
 import fr.modcraftmc.crossservercore.CrossServerCore;
-import fr.modcraftmc.crossservercore.References;
 
 import java.io.IOException;
 

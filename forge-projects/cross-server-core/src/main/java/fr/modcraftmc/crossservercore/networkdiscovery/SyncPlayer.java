@@ -1,6 +1,5 @@
 package fr.modcraftmc.crossservercore.networkdiscovery;
 
-import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayerProxy;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncServer;

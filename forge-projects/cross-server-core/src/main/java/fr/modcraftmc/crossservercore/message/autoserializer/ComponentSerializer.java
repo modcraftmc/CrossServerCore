@@ -1,11 +1,9 @@
-package fr.modcraftmc.crossservercore.api.message.autoserializer;
+package fr.modcraftmc.crossservercore.message.autoserializer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
+import fr.modcraftmc.crossservercore.api.message.autoserializer.FieldSerializer;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 

@@ -1,6 +1,5 @@
 package fr.modcraftmc.crossservercore.api.message;
 
-import fr.modcraftmc.crossservercore.CrossServerCore;
 import fr.modcraftmc.crossservercore.api.annotation.AutoRegister;
 import fr.modcraftmc.crossservercore.api.annotation.AutoSerialize;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.ISyncPlayer;

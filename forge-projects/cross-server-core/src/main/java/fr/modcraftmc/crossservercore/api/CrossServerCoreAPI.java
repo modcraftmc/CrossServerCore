@@ -6,8 +6,8 @@ import fr.modcraftmc.crossservercore.api.dataintegrity.ISecurityWatcher;
 import fr.modcraftmc.crossservercore.api.message.BaseMessage;
 import fr.modcraftmc.crossservercore.api.message.IMessageHandler;
 import fr.modcraftmc.crossservercore.api.message.autoserializer.IMessageAutoPropertySerializer;
-import fr.modcraftmc.crossservercore.api.rabbitmq.IMessageStreamsManager;
 import fr.modcraftmc.crossservercore.api.networkdiscovery.*;
+import fr.modcraftmc.crossservercore.api.rabbitmq.IMessageStreamsManager;
 import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
 

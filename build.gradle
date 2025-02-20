@@ -6,7 +6,7 @@ subprojects {
     println "Setup: ${project.name}";
 
     group = 'fr.modcraftmc'
-    archivesBaseName = "${project.name}"
+    //archivesBaseName = "${project.name}"
 
 
 //    tasks.register('copyJars', Copy) {

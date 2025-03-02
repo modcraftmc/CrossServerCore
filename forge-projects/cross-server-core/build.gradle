@@ -1,9 +1,3 @@
-plugins{
-    id 'com.gradleup.shadow' version '8.3.6'
-}
-
-apply plugin: 'com.gradleup.shadow'
-
 group = 'fr.modcraftmc'
 if(project.release_type == "snapshot") {
     version = "${minecraft_version}-${mod_version}-SNAPSHOT"

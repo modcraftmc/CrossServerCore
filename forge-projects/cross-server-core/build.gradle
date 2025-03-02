@@ -72,11 +72,9 @@ publishing {
     }
     publications {
         crossServerCore(MavenPublication) { publication ->
-            project.shadow.component(publication)
-
             groupId = "fr.modcraftmc"
             artifactId = "cross-server-core"
-            version = project.mod_version
+            version = "${minecraft_version}-${mod_version}"
 
             artifact sourcesJar{
                 archiveClassifier.set('sources')

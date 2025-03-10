@@ -30,6 +30,7 @@ public class MessageAutoPropertySerializer implements IMessageAutoPropertySerial
         registerFieldSerializer(new SyncPlayerSerializer());
         registerFieldSerializer(new ListSerializer());
         registerFieldSerializer(new UUIDSerializer());
+        registerFieldSerializer(new ComponentSerializer());
         registerFieldSerializer(new OptionalSerializer());
         registerFieldSerializer(new ISyncPlayerProxySerializer());
         registerFieldSerializer(new ISyncServerProxySerializer());

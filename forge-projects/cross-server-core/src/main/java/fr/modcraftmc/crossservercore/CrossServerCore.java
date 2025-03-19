@@ -34,7 +34,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerNegotiationEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
-import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.slf4j.Logger;
 
@@ -182,7 +182,7 @@ public class CrossServerCore {
         new CrossServerCoreProxyExtensionAPIImpl(crossServerCoreProxyExtension);
     }
 
-    public void onServerStop(ServerStoppingEvent event){
+    public void onServerStop(ServerStoppedEvent event){
         serverCluster.detach();
         mongodbConnection.close();
         rabbitmqConnection.close();

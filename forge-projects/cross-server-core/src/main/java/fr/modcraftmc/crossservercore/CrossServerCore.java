@@ -39,6 +39,9 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.TimeoutException;
 
 @Mod("crossservercore")
@@ -128,20 +131,36 @@ public class CrossServerCore {
     }
 
     private void initializeMongodbConnection(){
-        CrossServerCore.LOGGER.debug("Connecting to MongoDB");
-        ConfigManager.MongodbConfigData mongodbConfigData = ConfigManager.mongodbConfigData;
+        try {
+            CrossServerCore.LOGGER.debug("Connecting to MongoDB");
+            ConfigManager.MongodbConfigData mongodbConfigData = ConfigManager.mongodbConfigData;
 
-        if(mongodbConnection != null) mongodbConnection.close();
-        mongodbConnection = new MongodbConnectionBuilder()
-                .host(mongodbConfigData.host)
-                .port(mongodbConfigData.port)
-                .username(mongodbConfigData.username)
-                .password(mongodbConfigData.password)
-                .authsource(mongodbConfigData.database)
-                .database(mongodbConfigData.database)
-                .onHeartbeatFailed(() -> CrossServerCore.SynchronizationSecurityWatcher.addIssue(SecurityWatcher.MONGODB_CONNECTION_ISSUE))
-                .onHeartbeatSucceeded(() -> CrossServerCore.SynchronizationSecurityWatcher.removeIssue(SecurityWatcher.MONGODB_CONNECTION_ISSUE))
-                .build();
+            // Note: for some reason mongodb doesn't work with ipv6, so resolve the docker dns entry manyally
+            InetAddress[] address = Inet4Address.getAllByName(mongodbConfigData.host);
+            String ip = "";
+            for (InetAddress inetAddress : address) {
+                if (inetAddress instanceof Inet4Address addressv4) {
+                    ip = addressv4.getHostAddress();
+                }
+            }
+            LOGGER.info("using address : {} for mongodb connection", ip);
+
+            if(mongodbConnection != null) mongodbConnection.close();
+            mongodbConnection = new MongodbConnectionBuilder()
+                    .host(ip)
+                    .port(mongodbConfigData.port)
+                    .username(mongodbConfigData.username)
+                    .password(mongodbConfigData.password)
+                    .authsource(mongodbConfigData.database)
+                    .database(mongodbConfigData.database)
+                    .onHeartbeatFailed(() -> CrossServerCore.SynchronizationSecurityWatcher.addIssue(SecurityWatcher.MONGODB_CONNECTION_ISSUE))
+                    .onHeartbeatSucceeded(() -> CrossServerCore.SynchronizationSecurityWatcher.removeIssue(SecurityWatcher.MONGODB_CONNECTION_ISSUE))
+                    .build();
+
+        } catch (UnknownHostException e) {
+            CrossServerCore.LOGGER.error("Error while resolving mongodb ip (wtf?) : %s".formatted(e.getMessage()));
+            throw new RuntimeException(e);
+        }
 
         NeoForge.EVENT_BUS.post(new MongodbConnectionReadyEvent(mongodbConnection));
         CrossServerCore.LOGGER.info("Connected to MongoDB");

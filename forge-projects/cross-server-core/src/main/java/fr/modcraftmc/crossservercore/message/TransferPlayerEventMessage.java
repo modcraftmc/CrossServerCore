@@ -15,6 +15,8 @@ public class TransferPlayerEventMessage extends BaseMessage {
     @AutoSerialize
     private ISyncServer destination;
 
+    public TransferPlayerEventMessage() {}
+
     public TransferPlayerEventMessage(ISyncPlayerProxy player, ISyncServer destination) {
         this.player = player;
         this.destination = destination;

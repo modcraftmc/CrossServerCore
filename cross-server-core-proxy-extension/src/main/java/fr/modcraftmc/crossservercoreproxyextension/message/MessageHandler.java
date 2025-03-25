@@ -28,7 +28,6 @@ public class MessageHandler implements IMessageHandler {
         registerAutoMessage();
 
         RabbitmqDirectSubscriber.instance.subscribe("proxy", (consumerTag, message) -> {
-            CrossServerCoreProxy.instance.getLogger().info("Received message: " + new String(message.getBody())); //todo: delete
             CrossServerCoreProxy.instance.getLogger().debug("Received message: " + new String(message.getBody()));
             String messageJson = new String(message.getBody(), StandardCharsets.UTF_8);
             try {

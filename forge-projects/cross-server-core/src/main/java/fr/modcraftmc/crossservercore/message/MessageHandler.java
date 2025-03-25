@@ -26,7 +26,6 @@ public class MessageHandler implements IMessageHandler {
         registerAutoMessage();
 
         CrossServerCore.getMessageStreamsManager().subscribeDirectMessage(CrossServerCore.getServerName(), (message) -> {
-            CrossServerCore.LOGGER.info("Received message: " + message); //todo: delete
             CrossServerCore.LOGGER.debug("Received message: " + message);
             try {
                 handle(message);
@@ -36,7 +35,6 @@ public class MessageHandler implements IMessageHandler {
         });
 
         CrossServerCore.getMessageStreamsManager().subscribeBroadcastMessage((message) -> {
-            CrossServerCore.LOGGER.info("Received message: " + message); //todo: delete
             CrossServerCore.LOGGER.debug("Received message: " + message);
             try {
                 handle(message);

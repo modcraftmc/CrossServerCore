@@ -13,7 +13,6 @@ public class RabbitmqDirectStream extends RabbitmqStream {
     }
 
     public void publish(String routingKey, String message) throws IOException {
-        CrossServerCore.LOGGER.info("sending : " + message); //todo: delete
         CrossServerCore.LOGGER.debug(String.format("Publishing message to %s with routing key %s", exchangeName, routingKey));
         rabbitmqChannel.basicPublish(exchangeName, routingKey, null, message.getBytes());
     }

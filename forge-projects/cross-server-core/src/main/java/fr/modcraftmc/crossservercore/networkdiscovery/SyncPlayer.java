@@ -70,6 +70,11 @@ public class SyncPlayer implements ISyncPlayer {
 
     @Override
     public String toString() {
-        return String.format("%s (%s)", name, uuid);
+        return "SyncPlayer{" +
+                "uuid=" + uuid +
+                ", name='" + name + '\'' +
+                ", syncServer=" + syncServer +
+                ", valid=" + valid +
+                '}';
     }
 }

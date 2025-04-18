@@ -22,7 +22,7 @@ public class PlayerLeaved extends BaseMessage {
 
     @Override
     public void handle() {
-        CrossServerCore.LOGGER.debug(String.format("Player %s leaved server %s", player.getName(), player.getServer().getName()));
+        CrossServerCore.LOGGER.debug(String.format("Player %s leaved server %s", player.getName(), player.proxy().getName()));
         CrossServerCore.getServerCluster().removePlayer(player);
         NeoForge.EVENT_BUS.post(new PlayerLeaveClusterEvent(player, false));
     }
